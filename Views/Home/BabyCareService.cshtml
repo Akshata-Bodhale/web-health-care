@@ -1,0 +1,385 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyTots Babysitting Services</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: white;
+            color: #4a4a4a;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Decorative Elements */
+        .decoration {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .circle-1 {
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd6e0, #ffacc7);
+            opacity: 0.4;
+        }
+
+        .circle-2 {
+            bottom: 100px;
+            left: -150px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c4f0ff, #a0d2f3);
+            opacity: 0.3;
+        }
+
+       /*  .zigzag {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            width: 100px;
+            height: 200px;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #ffde9e 50%),
+                linear-gradient(-45deg, transparent 50%, #ffde9e 50%);
+            background-size: 20px 20px;
+            background-repeat: repeat-y;
+            opacity: 0.5;
+        }
+ */
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+/* 
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff6b93;
+        }
+
+        .logo span {
+            color: #5dadec;
+        } */
+
+       /*  .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a4a4a;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #ff6b93;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b93;
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        } */
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin: 60px 0;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(74, 74, 74, 0.1);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-image:hover img {
+            transform: translateY(-10px);
+        }
+
+        .hero-image:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px dashed #5dadec;
+            border-radius: 20px;
+            top: 15px;
+            left: 15px;
+            z-index: -1;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #ffeffc;
+            color: #ff6b93;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 147, 0.1);
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        h1 span {
+            color: #ff6b93;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1 span:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            bottom: 5px;
+            left: 0;
+            background-color: #ffe0eb;
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        .description {
+            font-size: 18px;
+            color: #6a6a6a;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b93, #ff8e8e);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 147, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 107, 147, 0.3);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        .feature-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(74, 74, 74, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(74, 74, 74, 0.1);
+        }
+
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #ffe0eb;
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+            z-index: 0;
+            transition: all 0.5s ease;
+        }
+
+        .feature-card:hover:before {
+            width: 150px;
+            height: 150px;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #ff6b93;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-desc {
+            font-size: 16px;
+            color: #6a6a6a;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+            }
+
+            .hero-image:before {
+                display: none;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+
+        media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative Elements -->
+   @*  <div class="decoration circle-1"></div>
+    <div class="decoration circle-2"></div>
+    <div class="decoration zigzag"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">Tiny<span>Tots</span></div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Services</a>
+                <a href="#">Sitters</a>
+                <a href="#">Reviews</a>
+                <a href="#">Contact</a>
+            </nav>
+        </header>
+ *@
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="tag">Professional Childcare</div>
+                <h1>Trusted <span>Babysitting</span> Services for Your Little Ones</h1>
+                <p class="description">Our experienced and caring babysitters provide a safe, fun, and nurturing environment for your children. We're here to give you peace of mind when you need it most.</p>
+                <a href="#" class="btn">Book a Sitter Today</a>
+            </div>
+            <div class="hero-image">
+                <img src="~/Images/baby.jpg" alt="Happy child with babysitter">
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">👩‍👧</div>
+                <h3 class="feature-title">Experienced Sitters</h3>
+                <p class="feature-desc">All our sitters are thoroughly vetted, trained in childcare, and have years of experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Safe & Secure</h3>
+                <p class="feature-desc">Background checks, references, and interviews ensure your child's safety is our priority.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏰</div>
+                <h3 class="feature-title">Flexible Scheduling</h3>
+                <p class="feature-desc">Last-minute bookings, regular schedules, or special occasions—we're here when you need us.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3 class="feature-title">Educational Activities</h3>
+                <p class="feature-desc">Our sitters come prepared with age-appropriate activities to keep your children engaged.</p>
+            </div>
+        </section>
+    
+</body>
+</html>

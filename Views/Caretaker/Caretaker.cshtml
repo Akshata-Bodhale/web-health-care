@@ -1,0 +1,148 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+  <h1>Caretaker form</h1>
+@model CareProjct.web.Models.Caretaker
+
+
+<body class="bg-primary bg-white ">
+    <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-14 col-md-10 col-lg-7">
+                    <div class="bg-white rounded-3 shadow p-4 p-sm-5">
+                        <!-- Logo or Brand Name -->
+                        <div class="text-center mb-4">
+
+                            <h4> <p class="text-primary">Please Submit Your Details</p> </h4>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form asp-action="Caretaker" method="post" asp-controller="Caretaker" enctype="multipart/form-data">
+                             @* <div class="mb-3">
+                                <label  class="form-label" >ID</label>
+                                <input type="number" class="form-control form-control-lg" asp-for="ID">
+                            </div>
+                            *@
+                            <div class="mb-3">
+                                <label  class="form-label">Full Name</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="FullName">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <div class="form-floating">
+                                    <textarea class="form-control" asp-for="Address"></textarea>
+                                    
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">City</label>
+                                <div class="form-floating">
+                                    <select class="form-select" asp-for="City">
+                                        <option>select your city</option>
+                                        <option value="Kolhapur">Kolhapur</option>
+                                        <option value="Pune">Pune</option>
+                                        <option value="Gargoti">Gargoti</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="Email">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">DateOfBirth</label>
+                                <input type="datetime" class="form-control form-control-lg" asp-for="DateOfBirth">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Gender</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="Gender">
+                            </div> 
+                            
+                            @*
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="Gender">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Male
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="Gender">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Female
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="Other">
+                                    <label class="form-check-label" for="flexRadioDefault2" asp-for="Gender">
+                                        Other
+                                    </label>
+                                </div>
+                            </div>
+                            *@
+                             <div class="mb-3">
+                                <label  class="form-label">Contact Number</label>
+                                <input type="number" class="form-control form-control-lg" asp-for="ContactNumber" />
+                            </div> 
+                            <div class="mb-3">
+                                <label class="form-label">Qualification</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="Qualification">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Experience</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="Experience">
+                            </div>
+                           
+                            <div class="form-group">
+                                <label asp-for="ImageFile" class="control-label"></label>
+                                <input asp-for="ImageFile" type="file" class="form-control" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <div class="form-floating">
+                                    <select class="form-select" asp-for="Category">
+                                        <option>select your Service type</option>
+                                        
+                                        <option value="BabySitter">BabySitter</option>
+                                        <option value="Eldercare">Eldercare</option>
+                                    </select>
+                                </div>
+                            </div>
+                                
+                             <h3>Bank Deatils</h3>
+                            <div class="mb-3">
+                                <label class="form-label">CardholderName</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="CardholderName">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">CardNumber</label>
+                                <input type="number" class="form-control form-control-lg" asp-for="CardNumber">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">ExpirationDate</label>
+                                <input type="date" class="form-control form-control-lg" asp-for="ExpirationDate">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">CVV</label>
+                                <input type="number" class="form-control form-control-lg" asp-for="CVV">
+                            </div>
+
+ 
+                            <button type="submit" class="btn btn-primary w-100 py-3">Submit</button>
+                        </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="D:\class\bootstrap b1/js/bootstrap.bundle.min.js"></script>
+</body>
+  

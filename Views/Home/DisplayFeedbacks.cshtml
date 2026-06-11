@@ -1,0 +1,239 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@model List<CareProjct.web.Models.FeedbackViewModel>
+
+
+ @* <div class="container mt-5">
+    <h2 class="mb-4">Feedbacks</h2>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <h5 class="card-title"><strong>FullName:</strong>@item.FullName</h5>
+
+                        <p class="card-text"><strong>NurseName:</strong> @item.NurseName</p>
+                        <p class="card-text"><strong>Description:</strong> @item.Description</p>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
+    </div>
+</div>  *@
+
+<div class="testimonial-container mt-5">
+    <h2 class="testimonial-heading text-center mb-5">What Our Clients Say</h2>
+
+    <div class="testimonial-slider">
+        @foreach (var item in Model)
+        {
+            <div class="testimonial-slide">
+                <div class="quote-marks">&ldquo; &rdquo;</div>
+
+               
+               
+
+                <div class="testimonial-content">
+                    <p class="testimonial-text">@item.Description</p>
+                    <div class="client-details">
+                        <p class="client-name">@item.FullName</p>
+                        <p class="client-title">- @item.NurseName</p>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="nav-button prev">&#8249;</button>
+                    <button class="nav-button next">&#8250;</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .testimonial-container {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        padding: 20px;
+    }
+
+    .testimonial-heading {
+        font-weight: 300;
+        color: #333;
+        letter-spacing: 1px;
+    }
+
+    .testimonial-slider {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .testimonial-slide {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        padding: 60px 40px 40px;
+        text-align: center;
+        position: relative;
+        margin: 20px 10px;
+    }
+
+    .quote-marks {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        font-family: Georgia, serif;
+        font-size: 60px;
+        color: #f8f8f8;
+        line-height: 0;
+        user-select: none;
+    }
+
+    .client-image-container {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 25px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .client-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-image {
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: #888;
+    }
+
+    .testimonial-text {
+        font-size: 18px;
+        line-height: 1.7;
+        color: #666;
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+
+    .client-details {
+        margin-top: 20px;
+    }
+
+    .client-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 2px;
+        font-size: 18px;
+    }
+
+    .client-title {
+        color: #888;
+        font-size: 15px;
+    }
+
+    .navigation-buttons {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 100px;
+        background-color: #ffd700;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        color: white;
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .nav-button:hover {
+            background-color: #ffcc00;
+        }
+
+        .nav-button.prev {
+            left: -10px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .nav-button.next {
+            right: -10px;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+</style>
+
+<!-- Add this JavaScript at the end of your page -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all slides
+        const slides = document.querySelectorAll('.testimonial-slide');
+        if (slides.length <= 1) return;
+
+        // Hide all slides except the first one
+        for (let i = 1; i < slides.length; i++) {
+            slides[i].style.display = 'none';
+        }
+
+        let currentSlide = 0;
+
+        // Function to show a specific slide
+        function showSlide(index) {
+            // Hide all slides
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';
+            }
+
+            // Show the selected slide
+            slides[index].style.display = 'block';
+        }
+
+        // Add click event to all prev buttons
+        document.querySelectorAll('.nav-button.prev').forEach(button => {
+            button.addEventListener('click', function() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Add click event to all next buttons
+        document.querySelectorAll('.nav-button.next').forEach(button => {
+            button.addEventListener('click', function() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            });
+        });
+    });
+</script>

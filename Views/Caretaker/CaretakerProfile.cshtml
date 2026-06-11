@@ -1,0 +1,149 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CareProjct.web.Models.Caretaker
+@* <div class="card">
+    <div class="card-body">
+
+        <h5 class="card-title">@Model.FullName</h5>
+
+        <p class="card-text">
+            <strong> </strong>
+            <img src="@Model.ImagePath" height="70px" width="70px" />
+        </p>
+
+        <p class="card-text"><strong>ID:</strong> @Model.ID</p>
+        <p class="card-text"><strong>Full Name:</strong> @Model.FullName</p>
+        <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+        <p class="card-text"><strong>City:</strong> @Model.City</p>
+        
+        <p class="card-text"><strong>Gender:</strong> @Model.Gender</p>
+        
+        <p class="card-text"><strong>Qualification:</strong> @Model.Qualification</p>
+        <p class="card-text"><strong>Experience:</strong> @Model.Experience</p>
+        <p class="card-text"><strong>Service Type:</strong> @Model.ServiceType</p>
+
+    </div>
+</div>
+ *@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .profile-card {
+            display: flex;
+            max-width: 1000px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 40px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .profile-image {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-right: 1px solid #eee;
+            margin: 40px;
+        }
+
+        .profile-info {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+
+        .profile-title {
+            font-size: 16px;
+            color: #666;
+            margin: 0 0 15px 0;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+            margin: 0 0 15px 0;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-card">
+        <img src="/Images/baby.jpg" alt="Profile Picture" class="profile-image">
+        <div class="profile-info">
+            <h2 class="profile-name">@Model.FullName</h2>
+            <div class="profile-title"></div>
+            <p class="profile-bio">
+            <p class="card-text"><strong>ID:</strong> @Model.ID</p>
+            <p class="card-text"><strong>Full Name:</strong> @Model.FullName</p>
+            <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+            <p class="card-text"><strong>City:</strong> @Model.City</p>
+            @* <p class="card-text"><strong>DateOfBirth:</strong> @Model.DateOfBirth</p> *@
+            <p class="card-text"><strong>Gender:</strong> @Model.Gender</p>
+
+            <p class="card-text"><strong>Qualification:</strong> @Model.Qualification</p>
+            <p class="card-text"><strong>Experience:</strong> @Model.Experience</p>
+           
+            </p>
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-value">152</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1.2k</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">86</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-grid gap-2">
+        <form method="post" action="@Url.Action("AddToCart", "Account")">
+            <input type="hidden" name="id" value="@Model.ID" />
+            <button type="submit" class="btn btn-primary btn-lg">Add to Cart</button>
+        </form>
+        <a href="@Url.Action("Checkout", "Caretaker")" class="btn btn-outline-primary">Buy Now</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,555 @@
+﻿
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect Membership</title>
+    <style>
+        body {
+         
+            
+      
+            
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200vh;
+            margin: 0;
+        }
+
+        .signup-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 400px;
+        }
+
+        .signup-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+
+        .select-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .signup-button:hover {
+                background-color: #2980b9;
+            }
+
+        .terms-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 800px;
+        }
+        .header {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 18px;
+        }
+        .price-tag {
+            background: #ff4d4d;
+            color: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .features {
+            margin: 10px 0;
+            color: #555;
+        }
+        .features span {
+            display: block;
+            margin: 5px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .cta-button:hover {
+            background: #0056b3;
+        }
+        .signin {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .signin a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .signin a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>CareConnect Membership</h2>
+            <p>Join our  care service network today</p>
+        </div>
+        <h3>Care Package</h3>
+        <div class="price-tag">
+            ₹500 fixed payment
+        </div>
+        <div class="features">
+            <span>&#10004; 24/7 Support</span>
+            <span>&#10004; Priority Booking</span>
+            <span>&#10004; Certified Caregivers</span>
+        </div>
+         <form>
+            <div class="form-group">
+                <input type="text" placeholder="First Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Last Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="Email Address" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Zip Code" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <select class="select-dropdown" required>
+                    <option value="">I consider myself a...</option>
+                    <option value="babysitter">Babysitter</option>
+                    <option value="caregiver">Caregiver</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="terms-checkbox">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#" class="terms-link">Terms of Use</a> and <a href="#" class="terms-link">Privacy Policy</a></label>
+            </div>
+            <button type="submit" class="signup-button">Create Membership (500 RS)</button>
+        </form>
+        <a href="#" class="cta-button">Join Now - Pay ₹500</a>
+        <div class="signin">
+            Already have an account? <a href="#">Sign in</a>
+        </div>
+    </div>
+</body>
+</html>  
+
+ *@
+ @* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Care Service Membership</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .signup-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 400px;
+        }
+
+        .signup-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+
+        .select-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .signup-button:hover {
+                background-color: #2980b9;
+            }
+
+        .terms-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2 class="signup-title">Care Service Membership</h2>
+        <form>
+            <div class="form-group">
+                <input type="text" placeholder="First Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Last Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="Email Address" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Zip Code" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <select class="select-dropdown" required>
+                    <option value="">I consider myself a...</option>
+                    <option value="babysitter">Babysitter</option>
+                    <option value="caregiver">Caregiver</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="terms-checkbox">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#" class="terms-link">Terms of Use</a> and <a href="#" class="terms-link">Privacy Policy</a></label>
+            </div>
+            <button type="submit" class="signup-button">Create Membership (500 RS)</button>
+        </form>
+    </div>
+</body>
+</html>  *@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect Membership</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+         *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } 
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color:white;
+            color: #333;
+            line-height: 1.6;
+            height: 300vh;
+
+        }
+
+      
+
+       
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            
+            
+            padding: 40px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .header {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            margin: -40px -40px 30px;
+            padding: 20px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            text-align: center;
+        }
+
+        .price-tag {
+            background: #ff4d4d;
+            color: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+        }
+
+        .select-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .signup-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .terms-link {
+            color: #3498db;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .signin {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .signin a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+   
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header">
+                <h2>CareConnect Membership</h2>
+                <p>Join our care service network today</p>
+            </div>
+
+            <div class="price-tag">₹200 fixed payment for 6 Months</div>
+
+            <form>
+                <div class="form-group">
+                    <label for="firstname" class="form-label">First Name</label>
+                    <input type="text" id="firstname" placeholder="Enter your first name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastname" class="form-label">Last Name</label>
+                    <input type="text" id="lastname" placeholder="Enter your last name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" placeholder="Create a strong password" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="zipcode" class="form-label">Zip Code</label>
+                    <input type="text" id="zipcode" placeholder="Enter your zip code" class="form-input" required>
+                </div>
+
+               @*  <div class="form-group">
+                    <label for="role" class="form-label">Choose a service</label>
+                    <select id="role" class="select-dropdown" required>
+                        <option value="">Select your </option>
+                        <option value="babysitter">Babysitter</option>
+                        <option value="caregiver">Caregiver</option>
+                        <option value="nurse">Nurse</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div> *@
+                <div class="form-group">
+                    <label for="card-no" class="form-label">Card Number</label>
+                    <input type="text" id="card-no" class="form-input" placeholder="Enter 16-digit card number" required>
+                </div>
+
+                <div class="card-details">
+                    <div class="form-group">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input type="text" id="cvv" class="form-input" placeholder="CVV" required maxlength="3">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="text" id="amount" class="form-input" placeholder="Enter amount" required value="200" disabled>
+
+                       
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the 
+                        <a href="#" class="terms-link">Terms of Use</a> and 
+                        <a href="#" class="terms-link">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="signup-button">Create Membership (₹200)</button>
+            </form>
+
+            <div class="signin">
+                Already have an account? <a href="#">Sign In</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
