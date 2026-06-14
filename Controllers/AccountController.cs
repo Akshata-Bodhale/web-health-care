@@ -124,7 +124,9 @@ namespace CareProjct.web.Controllers
             model.PaymentStatus   = "Pending";
             model.OrderStatus     = "Confirmed";
             model.TermsAcceptedOn = DateTime.Now;
+            var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == CaretakerId);
             model.ProductDetails  = CaretakerId.ToString();
+            model.TotalAmount     = PricePerDay * model.NumberOfDays;  // FIX 3
 
             _context.OrderConfirm.Add(model);
             _context.SaveChanges();

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using CareProjct.web.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 internal class Program
@@ -9,9 +8,6 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        
-
-        
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddDbContext<Applicationdbcontext>(options => options.UseSqlite("Data Source=careservice.db"));
@@ -21,6 +17,8 @@ internal class Program
             options.Cookie.IsEssential = true;
         });//sessiontime out
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<CareProjct.web.Models.OrderReceiptService>();
+
         var app = builder.Build();
         app.UseSession();
 

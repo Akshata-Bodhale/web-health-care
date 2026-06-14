@@ -85,6 +85,7 @@ namespace CareProjct.web.Controllers
             HttpContext.Session.SetString("UserName", model.FirstName + " " + model.LastName);
             HttpContext.Session.SetString("UserType", "Caretaker");
             HttpContext.Session.SetString("UserEmail", model.Email);
+            HttpContext.Session.SetString("Email",     model.Email); 
             
             TempData["SuccessMessage"] =
                 "Account created! Please complete your nurse profile.";
@@ -106,6 +107,7 @@ namespace CareProjct.web.Controllers
             {
                 HttpContext.Session.SetString("userId",    "0");
                 HttpContext.Session.SetString("Email",     AdminEmail);
+                HttpContext.Session.SetString("UserEmail", AdminEmail);
                 HttpContext.Session.SetString("UserType",  "Admin");
                 HttpContext.Session.SetString("UserName",  "Admin");
                 return RedirectToAction("Index", "AdminBoard");
@@ -124,14 +126,11 @@ namespace CareProjct.web.Controllers
             }
 
             // ── 3. Store session ──
-            HttpContext.Session.SetString("userId",
-                user.ID.ToString());
-            HttpContext.Session.SetString("Email",
-                user.Email);
-            HttpContext.Session.SetString("UserType",
-                user.Type);
-            HttpContext.Session.SetString("UserName",
-                user.FirstName + " " + user.LastName);
+            HttpContext.Session.SetString("userId",    user.ID.ToString());
+            HttpContext.Session.SetString("Email",     user.Email);
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("UserType",  user.Type);
+            HttpContext.Session.SetString("UserName",  user.FirstName + " " + user.LastName);
 
             // ── 4. Redirect based on role ──
             if (user.Type == "Caretaker")
@@ -196,8 +195,10 @@ namespace CareProjct.web.Controllers
             {
                 _Context.FeedbackViewModel.Add(model);
                 _Context.SaveChanges();
-            }
-            return View();
+                TempData["SuccessMessage"] = "Thank you for your feedback!";
+                return RedirectToAction("DisplayFeedbacks");
+                }
+                return View();
         }
 
         public IActionResult DisplayFeedbacks()

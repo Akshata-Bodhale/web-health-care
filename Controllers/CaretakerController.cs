@@ -58,9 +58,15 @@ namespace CareProjct.web.Controllers
                 _Context.Caretaker.Add(product);
                 await _Context.SaveChangesAsync();
 
-                TempData["Success"] = "Registration submitted! Admin will review and notify you within 48 hours.";
+                // ── Set session so nurse stays logged in ──
+                HttpContext.Session.SetString("UserEmail", product.Email);
+                HttpContext.Session.SetString("UserName",  product.FullName);
+                HttpContext.Session.SetString("UserType",  "Caretaker");
+                HttpContext.Session.SetString("userId",    product.ID.ToString());
+
+                TempData["SuccessMessage"] = "Registration submitted! Admin will review and notify you within 48 hours.";
                 return RedirectToAction("RegistrationPending");
-            }
+                            }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error: " + ex.Message);
@@ -111,13 +117,15 @@ namespace CareProjct.web.Controllers
         [UserAuthenication]
         public IActionResult MyDashboard()
         {
-            var email = HttpContext.Session.GetString("Email");
+            // Try both keys — covers login and registration flows
+            var email = HttpContext.Session.GetString("UserEmail") 
+            ?? HttpContext.Session.GetString("Email");
             var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
 
             if (nurse == null) return RedirectToAction("Login", "Home");
 
             var allBookings = _Context.OrderConfirm
-                .Where(o => o.UserId == nurse.ID.ToString())
+                .Where(o => o.ProductDetails == nurse.ID.ToString())
                 .ToList();
 
             var vm = new CaretakerDashboardViewModel
@@ -216,6 +224,17 @@ namespace CareProjct.web.Controllers
                 await file.CopyToAsync(fileStream);
 
             return "/" + folder.ToLower() + "/" + uniqueFileName;
+        }
+
+                // ── Nurse's Own Profile ──
+        [UserAuthenication]
+        public IActionResult MyProfile()
+        {
+            var email = HttpContext.Session.GetString("UserEmail") 
+            ?? HttpContext.Session.GetString("Email");
+            var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
+            if (nurse == null) return RedirectToAction("Login", "Home");
+            return View("CaretakerProfile", nurse);
         }
     }
 }
