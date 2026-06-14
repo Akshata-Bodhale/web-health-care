@@ -1,148 +1,274 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-  <h1>Caretaker form</h1>
-@model CareProjct.web.Models.Caretaker
+﻿@model CareProjct.web.Models.Caretaker
 
+<style>
+    :root {
+        --primary: #36625a;
+        --accent: #f8b84c;
+        --bg: #f5f0e3;
+        --light: rgba(93,140,130,0.1);
+        --radius: 10px;
+    }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--primary); }
+    .form-container { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 40px; max-width: 900px; margin: 40px auto; }
+    .section-title { color: var(--primary); font-weight: 700; font-size: 1.2rem; border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin: 30px 0 20px; }
+    .form-label { color: var(--primary); font-weight: 500; font-size: 0.9rem; }
+    .form-control, .form-select { border: 1px solid rgba(54,98,90,0.25); border-radius: var(--radius); padding: 10px; }
+    .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 0.2rem rgba(54,98,90,0.15); }
+    .file-upload-box { border: 2px dashed rgba(54,98,90,0.35); border-radius: var(--radius); padding: 20px; text-align: center; }
+    .agreement-box { background: #f8f9fa; border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; }
+    .agreement-text { font-size: 0.85rem; color: #555; max-height: 120px; overflow-y: auto; background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ddd; }
+    .btn-submit { background: var(--primary); color: white; border: none; border-radius: var(--radius); padding: 14px; font-weight: 700; width: 100%; font-size: 1.05rem; }
+    .btn-submit:hover { background: #2a4e47; }
+    .status-banner { background: #fff3cd; border: 1px solid #ffc107; border-radius: var(--radius); padding: 15px; margin-bottom: 20px; }
+</style>
 
-<body class="bg-primary bg-white ">
-    <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-14 col-md-10 col-lg-7">
-                    <div class="bg-white rounded-3 shadow p-4 p-sm-5">
-                        <!-- Logo or Brand Name -->
-                        <div class="text-center mb-4">
+<div class="form-container">
 
-                            <h4> <p class="text-primary">Please Submit Your Details</p> </h4>
-                        </div>
+    <div class="text-center mb-4">
+        <span style="background:var(--accent);color:white;padding:6px 20px;border-radius:20px;font-size:0.85rem;font-weight:700;">Caretaker Registration — Elder Care</span>
+        <h2 style="color:var(--primary);margin-top:12px;font-weight:700;">Join Our Elder Care Network</h2>
+        <p class="text-muted">Complete the form to register as a verified elder care nurse</p>
+    </div>
 
-                        <!-- Login Form -->
-                        <form asp-action="Caretaker" method="post" asp-controller="Caretaker" enctype="multipart/form-data">
-                             @* <div class="mb-3">
-                                <label  class="form-label" >ID</label>
-                                <input type="number" class="form-control form-control-lg" asp-for="ID">
-                            </div>
-                            *@
-                            <div class="mb-3">
-                                <label  class="form-label">Full Name</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="FullName">
-                            </div>
+    <div class="status-banner">
+        ⏳ After submitting, your profile will be reviewed by admin within <strong>24–48 hours</strong>. You will be notified once approved.
+    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Address</label>
-                                <div class="form-floating">
-                                    <textarea class="form-control" asp-for="Address"></textarea>
-                                    
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">City</label>
-                                <div class="form-floating">
-                                    <select class="form-select" asp-for="City">
-                                        <option>select your city</option>
-                                        <option value="Kolhapur">Kolhapur</option>
-                                        <option value="Pune">Pune</option>
-                                        <option value="Gargoti">Gargoti</option>
-                                    </select>
-                                </div>
-                            </div>
+    <form asp-action="Caretaker" method="post" asp-controller="Caretaker" enctype="multipart/form-data">
 
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="Email">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">DateOfBirth</label>
-                                <input type="datetime" class="form-control form-control-lg" asp-for="DateOfBirth">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Gender</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="Gender">
-                            </div> 
-                            
-                            @*
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="Gender">
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Male
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="Gender">
-                                    <label class="form-check-label" for="flexRadioDefault2">
-                                        Female
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="Other">
-                                    <label class="form-check-label" for="flexRadioDefault2" asp-for="Gender">
-                                        Other
-                                    </label>
-                                </div>
-                            </div>
-                            *@
-                             <div class="mb-3">
-                                <label  class="form-label">Contact Number</label>
-                                <input type="number" class="form-control form-control-lg" asp-for="ContactNumber" />
-                            </div> 
-                            <div class="mb-3">
-                                <label class="form-label">Qualification</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="Qualification">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Experience</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="Experience">
-                            </div>
-                           
-                            <div class="form-group">
-                                <label asp-for="ImageFile" class="control-label"></label>
-                                <input asp-for="ImageFile" type="file" class="form-control" />
-                                <span asp-validation-for="ImageFile" class="text-danger"></span>
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <div class="form-floating">
-                                    <select class="form-select" asp-for="Category">
-                                        <option>select your Service type</option>
-                                        
-                                        <option value="BabySitter">BabySitter</option>
-                                        <option value="Eldercare">Eldercare</option>
-                                    </select>
-                                </div>
-                            </div>
-                                
-                             <h3>Bank Deatils</h3>
-                            <div class="mb-3">
-                                <label class="form-label">CardholderName</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="CardholderName">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">CardNumber</label>
-                                <input type="number" class="form-control form-control-lg" asp-for="CardNumber">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">ExpirationDate</label>
-                                <input type="date" class="form-control form-control-lg" asp-for="ExpirationDate">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">CVV</label>
-                                <input type="number" class="form-control form-control-lg" asp-for="CVV">
-                            </div>
-
- 
-                            <button type="submit" class="btn btn-primary w-100 py-3">Submit</button>
-                        </form> 
-                    </div>
+        <!-- SECTION 1: Personal Information -->
+        <div class="section-title">1. Personal Information</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-control" asp-for="FullName" placeholder="As per government ID" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Date of Birth *</label>
+                <input type="date" class="form-control" asp-for="DateOfBirth" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Gender *</label>
+                <select class="form-select" asp-for="Gender" required>
+                    <option value="">Select gender</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Contact Number *</label>
+                <input type="tel" class="form-control" asp-for="ContactNumber" placeholder="10 digit mobile number" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Full Address *</label>
+            <textarea class="form-control" asp-for="Address" rows="2" placeholder="House No, Street, Area" required></textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">City *</label>
+                <select class="form-select" asp-for="City" required>
+                    <option value="">Select your city</option>
+                    <option value="Kolhapur">Kolhapur</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Gargoti">Gargoti</option>
+                    <option value="Sangli">Sangli</option>
+                    <option value="Satara">Satara</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Profile Photo *</label>
+                <div class="file-upload-box">
+                    <div>📷 Upload professional photo</div>
+                    <input asp-for="ImageFile" type="file" class="form-control mt-2" accept="image/*">
+                    <small class="text-muted">JPG or PNG, clear face photo</small>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="D:\class\bootstrap b1/js/bootstrap.bundle.min.js"></script>
-</body>
-  
+        <!-- SECTION 2: Account -->
+        <div class="section-title">2. Account Information</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Email Address *</label>
+                <input type="email" class="form-control" asp-for="Email" placeholder="Your active email" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Password *</label>
+                <input type="password" class="form-control" asp-for="Password" placeholder="Minimum 8 characters" required>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Professional -->
+        <div class="section-title">3. Professional Information</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Qualification *</label>
+                <select class="form-select" asp-for="Qualification" required>
+                    <option value="">Select qualification</option>
+                    <option value="Bachelor of Science in Nursing">BSc Nursing</option>
+                    <option value="Master of Science in Nursing">MSc Nursing</option>
+                    <option value="General Nursing and Midwifery">GNM — General Nursing & Midwifery</option>
+                    <option value="Auxiliary Nurse Midwifery">ANM — Auxiliary Nurse Midwifery</option>
+                    <option value="Doctor of Philosophy in Nursing">PhD Nursing</option>
+                    <option value="Other Medical Field">Other Medical Field</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Years of Experience *</label>
+                <select class="form-select" asp-for="Experience" required>
+                    <option value="">Select experience</option>
+                    <option value="Less than 1 year">Less than 1 year</option>
+                    <option value="1-2 years">1–2 years</option>
+                    <option value="3-5 years">3–5 years</option>
+                    <option value="5-10 years">5–10 years</option>
+                    <option value="More than 10 years">More than 10 years</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Service Category</label>
+                <input type="text" class="form-control" value="Elder Care" readonly style="background:#f0f0f0;">
+                <input type="hidden" asp-for="Category" value="Eldercare">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Nursing Council License Number *</label>
+                <input type="text" class="form-control" asp-for="LicenseNumber" placeholder="INC / State Council Registration No." required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Daily Rate (₹) *</label>
+            <select class="form-select" asp-for="Price" required>
+                <option value="">Select your daily rate</option>
+                <option value="800">₹800 per day</option>
+                <option value="1000">₹1,000 per day</option>
+                <option value="1200">₹1,200 per day</option>
+                <option value="1500">₹1,500 per day</option>
+                <option value="2000">₹2,000 per day</option>
+            </select>
+        </div>
+
+        <!-- SECTION 4: Documents -->
+        <div class="section-title">4. Document Uploads</div>
+        <p class="text-muted small mb-3">All documents are required. Admin will verify before your profile goes live.</p>
+
+        <div class="mb-3">
+            <label class="form-label">Nursing License Certificate *</label>
+            <div class="file-upload-box">
+                <div>📄 Upload Nursing Council Registration Certificate</div>
+                <input asp-for="LicenseDocumentFile" type="file" class="form-control mt-2" accept=".pdf,.jpg,.png">
+                <small class="text-muted">PDF, JPG or PNG — max 2MB</small>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Aadhaar Card *</label>
+            <div class="file-upload-box">
+                <div>🪪 Upload Aadhaar Card (front side)</div>
+                <input asp-for="AadhaarFile" type="file" class="form-control mt-2" accept=".pdf,.jpg,.png">
+                <small class="text-muted">PDF, JPG or PNG — max 2MB</small>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Police Clearance Certificate *</label>
+            <div class="file-upload-box">
+                <div>🔏 Upload Police Clearance Certificate</div>
+                <input asp-for="PoliceClearanceFile" type="file" class="form-control mt-2" accept=".pdf,.jpg,.png">
+                <small class="text-muted">PDF, JPG or PNG — max 2MB</small>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Bank Details -->
+        <div class="section-title">5. Bank Details (for receiving payments)</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Account Holder Name *</label>
+                <input type="text" class="form-control" asp-for="AccountHolderName" placeholder="As per bank records" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Bank Name *</label>
+                <input type="text" class="form-control" asp-for="BankName" placeholder="e.g. State Bank of India" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Bank Account Number *</label>
+                <input type="text" class="form-control" asp-for="BankAccountNumber" placeholder="Account number" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">IFSC Code *</label>
+                <input type="text" class="form-control" asp-for="IFSCCode" placeholder="e.g. SBIN0001234" required>
+            </div>
+        </div>
+
+        <!-- SECTION 6: Agreements -->
+        <div class="section-title">6. Agreements — Read and Accept All Three</div>
+
+        <div class="agreement-box">
+            <strong>Agreement 1 — Caretaker Service Agreement</strong>
+            <div class="agreement-text">
+                I agree to provide professional elder care services to patients assigned through this platform.
+                I will maintain the highest standards of hygiene, medical care, and patient dignity at all times.
+                I will not accept direct cash payments from the patient's family outside the platform.
+                I will follow the care plan provided by the family and platform.
+                I understand that my conduct, punctuality, and service quality will be reviewed by customers.
+                I agree that repeated poor reviews or complaints may result in suspension from the platform.
+                I will not share any personal, financial, or medical information of the patient or their family
+                with any third party under any circumstances.
+                I understand bookings have a maximum duration as specified by platform policy.
+                I will not establish a private employment arrangement with any family contacted through this platform.
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AgreedToNurseAgreement" required id="chk1">
+                <label class="form-check-label" for="chk1">
+                    <strong>I have read and agree to the Caretaker Service Agreement</strong>
+                </label>
+            </div>
+        </div>
+
+        <div class="agreement-box">
+            <strong>Agreement 2 — Non-Disclosure Agreement (NDA)</strong>
+            <div class="agreement-text">
+                I understand that during my service I will have access to sensitive information including the
+                patient's medical conditions, medications, personal history, family details, home address, and
+                financial circumstances. I agree to keep all such information strictly confidential.
+                I will not discuss, share, photograph, or record any patient or family information.
+                I will not post anything about my patients on social media or any public platform.
+                This confidentiality obligation continues even after my service engagement ends.
+                Breach of this agreement may result in legal action and permanent removal from the platform.
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AgreedToNDA" required id="chk2">
+                <label class="form-check-label" for="chk2">
+                    <strong>I have read and agree to the Non-Disclosure Agreement (NDA)</strong>
+                </label>
+            </div>
+        </div>
+
+        <div class="agreement-box">
+            <strong>Agreement 3 — Background Verification Consent</strong>
+            <div class="agreement-text">
+                I consent to the platform conducting a background verification check including criminal record
+                verification, identity verification, and nursing credential verification with the Indian Nursing
+                Council or relevant State Nursing Council. I understand this is mandatory before my profile
+                is approved. I confirm that all documents submitted by me are genuine. Submission of false
+                documents will result in immediate rejection and may be reported to relevant authorities.
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AgreedToBackgroundCheck" required id="chk3">
+                <label class="form-check-label" for="chk3">
+                    <strong>I consent to background verification and confirm all my documents are genuine</strong>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit mt-3">
+            Submit Registration Application
+        </button>
+        <p class="text-center text-muted small mt-3">
+            Your profile will be reviewed within 24–48 hours. You will receive an email notification once approved.
+        </p>
+    </form>
+</div>

@@ -1,695 +1,548 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Elder Care Services";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compassionate Home Care Services</title>
-    <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-        }
+<style>
+    :root {
+        --ec-primary: #36625a;
+        --ec-accent: #f8b84c;
+        --ec-light: #f5f0e3;
+    }
 
-        body {
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-        }
+    .page-hero {
+        background: linear-gradient(135deg, #36625a 0%, #4a8a7e 100%);
+        padding: 60px 0;
+        color: white;
+        text-align: center;
+    }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
+    .page-hero h1 {
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .page-hero p {
+        font-size: 1rem;
+        opacity: 0.85;
+        max-width: 520px;
+        margin: 0 auto;
+    }
 
-        /* Content Section */
-        .content-section {
-            display: flex;
-            flex-direction: row;
-            gap: 40px;
-            margin-top: 30px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    .page-hero .hero-tag {
+        display: inline-block;
+        background: rgba(248,184,76,0.2);
+        color: var(--ec-accent);
+        border: 1px solid rgba(248,184,76,0.35);
+        padding: 5px 16px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
 
-        /* Text Content */
-        .text-content {
-            flex: 1;
-            min-width: 300px;
-        }
+    /* Services Grid */
+    .services-section {
+        background: var(--ec-light);
+        padding: 64px 0;
+    }
 
-        /* Image Content */
-        .image-content {
-            flex: 1;
-            min-width: 300px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
+    .section-eyebrow {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--ec-primary);
+        margin-bottom: 8px;
+    }
 
-        .image-content:hover {
-            transform: translateY(-10px);
-        }
+    .section-title {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #1e3a35;
+        margin-bottom: 8px;
+    }
 
-        .image-content img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+    .section-sub {
+        color: #888;
+        font-size: 0.92rem;
+        margin-bottom: 44px;
+    }
 
-        /* Tagline */
-        .tagline {
-            color: #f47d6d;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            display: inline-block;
-            position: relative;
-        }
+    .service-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px 24px;
+        border: 1px solid #e8e0d0;
+        height: 100%;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .tagline::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: #f47d6d;
-        }
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: var(--ec-primary);
+        transform: scaleX(0);
+        transition: transform 0.25s;
+        transform-origin: left;
+    }
 
-        /* Heading */
-        h1 {
-            color: #0c3b5f;
-            font-size: 42px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
+    .service-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(54,98,90,0.1);
+        border-color: #b5d4cc;
+    }
 
-        /* Description */
-        .description {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 30px;
-            max-width: 600px;
-        }
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
 
-        /* Button */
-        .btn {
-            display: inline-block;
-            background-color: #f47d6d;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(244, 125, 109, 0.3);
-        }
+    .service-icon {
+        width: 60px;
+        height: 60px;
+        background: #e8f5f2;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        margin-bottom: 20px;
+    }
 
-        .btn:hover {
-            background-color: #e46c5c;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(244, 125, 109, 0.4);
-        }
+    .service-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1e3a35;
+        margin-bottom: 10px;
+    }
 
-        /* Flourish Elements */
-        .flourish {
-            position: absolute;
-            z-index: -1;
-        }
+    .service-desc {
+        font-size: 0.87rem;
+        color: #777;
+        line-height: 1.75;
+        margin: 0;
+    }
 
-        .flourish-1 {
-            top: 100px;
-            left: 0;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: rgba(244, 125, 109, 0.1);
-        }
+    /* Process Section */
+    .process-section {
+        background: white;
+        padding: 64px 0;
+    }
 
-        .flourish-2 {
-            bottom: 50px;
-            right: 10%;
-            width: 200px;
-            height: 200px;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            background-color: rgba(12, 59, 95, 0.05);
-        }
+    .process-step {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 32px;
+    }
 
-        /* Responsive */
-        media (max-width: 768px) {
-            .content-section {
-                flex-direction: column-reverse;
-            }
+    .process-step:last-child { margin-bottom: 0; }
 
-            h1 {
-                font-size: 32px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Flourish Elements -->
-    <div class="flourish flourish-1"></div>
-    <div class="flourish flourish-2"></div>
+    .process-num {
+        width: 44px;
+        height: 44px;
+        background: var(--ec-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
 
+    .process-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e3a35;
+        margin-bottom: 4px;
+    }
+
+    .process-desc {
+        font-size: 0.87rem;
+        color: #777;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .process-image {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .process-image img {
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Pricing */
+    .pricing-section {
+        background: var(--ec-light);
+        padding: 64px 0;
+    }
+
+    .price-card {
+        background: white;
+        border-radius: 16px;
+        padding: 36px 28px;
+        border: 1px solid #e8e0d0;
+        height: 100%;
+        text-align: center;
+        transition: all 0.25s;
+    }
+
+    .price-card.featured {
+        border: 2px solid var(--ec-primary);
+        position: relative;
+    }
+
+    .price-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 36px rgba(54,98,90,0.1);
+    }
+
+    .price-badge {
+        position: absolute;
+        top: -13px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--ec-accent);
+        color: #1e3a35;
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 4px 14px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .price-plan {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--ec-primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+
+    .price-amount {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: #1e3a35;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .price-period {
+        font-size: 0.8rem;
+        color: #999;
+        margin-bottom: 24px;
+    }
+
+    .price-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 28px;
+        text-align: left;
+    }
+
+    .price-features li {
+        font-size: 0.88rem;
+        color: #555;
+        padding: 7px 0;
+        border-bottom: 1px solid #f0ece2;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .price-features li:last-child { border-bottom: none; }
+
+    .price-features li::before {
+        content: '✓';
+        color: var(--ec-primary);
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .btn-book {
+        display: block;
+        background: var(--ec-primary);
+        color: white;
+        font-weight: 700;
+        padding: 13px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+        text-align: center;
+    }
+
+    .btn-book:hover {
+        background: #2a4e47;
+        color: white;
+    }
+
+    .btn-book.outline {
+        background: transparent;
+        border: 2px solid var(--ec-primary);
+        color: var(--ec-primary);
+    }
+
+    .btn-book.outline:hover {
+        background: var(--ec-primary);
+        color: white;
+    }
+
+    /* CTA */
+    .cta-section {
+        background: linear-gradient(135deg, #1e3a35, #36625a);
+        padding: 64px 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .cta-section p {
+        opacity: 0.85;
+        margin-bottom: 32px;
+        max-width: 460px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<!-- ══ PAGE HERO ══ -->
+<section class="page-hero">
     <div class="container">
-        <div class="content-section">
-            <div class="text-content">
-                <span class="tagline">Care with Compassion</span>
-                <h1>Our expert caregivers ensure comfort and well-being in the place you call home.</h1>
-                <p class="description">We provide professional and compassionate home care and private nursing services tailored to your needs. Our team is dedicated to improving quality of life for our clients.</p>
-                <a href="#" class="btn">Make Appointment</a>
+        <div class="hero-tag">Our Services</div>
+        <h1>🏥 Elder Care Services</h1>
+        <p>Professional, compassionate, and verified caretakers — tailored to every senior's unique needs.</p>
+    </div>
+</section>
+
+<!-- ══ SERVICES GRID ══ -->
+<section class="services-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="section-eyebrow">What We Offer</div>
+            <h2 class="section-title">Complete Care Solutions</h2>
+            <p class="section-sub">Every service delivered by trained, background-verified professionals</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">💊</div>
+                    <div class="service-title">Medication Management</div>
+                    <p class="service-desc">Timely reminders, dosage tracking, and coordination with doctors to ensure medications are never missed or doubled.</p>
+                </div>
             </div>
-            <div class="image-content">
-                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Caregiver helping elderly patient">
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🧘</div>
+                    <div class="service-title">Physiotherapy Support</div>
+                    <p class="service-desc">Guided physical exercises, mobility improvement routines, and post-surgery rehabilitation at home.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🍽️</div>
+                    <div class="service-title">Meal Preparation</div>
+                    <p class="service-desc">Nutrition-focused, doctor-recommended meals prepared fresh daily according to dietary requirements.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🚿</div>
+                    <div class="service-title">Personal Hygiene Care</div>
+                    <p class="service-desc">Bathing, grooming, dressing, and toileting assistance delivered with sensitivity and dignity.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🧠</div>
+                    <div class="service-title">Dementia & Memory Care</div>
+                    <p class="service-desc">Specialist support for seniors with Alzheimer's, dementia, and other cognitive conditions requiring patient, structured care.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🚗</div>
+                    <div class="service-title">Mobility Assistance</div>
+                    <p class="service-desc">Safe transfers, walking assistance, wheelchair support, and accompaniment to medical appointments.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🩺</div>
+                    <div class="service-title">Vital Signs Monitoring</div>
+                    <p class="service-desc">Regular monitoring of blood pressure, sugar levels, and other vitals with daily reports to family members.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">💬</div>
+                    <div class="service-title">Companionship Care</div>
+                    <p class="service-desc">Emotional support, conversation, recreational activities, and social engagement to prevent loneliness.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="service-icon">🌙</div>
+                    <div class="service-title">Overnight & 24/7 Care</div>
+                    <p class="service-desc">Round-the-clock care plans for seniors who need continuous supervision and assistance at all hours.</p>
+                </div>
             </div>
         </div>
     </div>
-</body>
-</html> *@
+</section>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Years Elder Care Services</title>
-    <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', 'Helvetica Neue', sans-serif;
-        }
-
-        body {
-            background-color: white;
-            color: #4a4a4a;
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Decorative Elements */
-        .decoration {
-            position: absolute;
-            z-index: -1;
-        }
-
-        /* .circle-1 {
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #e6f7ff, #b3e0ff);
-            opacity: 0.4;
-        }
-
-        .circle-2 {
-            bottom: 100px;
-            left: -150px;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #e6fff2, #b3ffd9);
-            opacity: 0.3;
-        } */
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 30px;
-            position: relative;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            margin: 60px 0;
-        }
-
-        .hero-content {
-            flex: 1;
-        }
-
-        .hero-image {
-            flex: 1;
-            position: relative;
-        }
-
-        .hero-image img {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(74, 74, 74, 0.1);
-            transition: transform 0.5s ease;
-        }
-
-        .hero-image:hover img {
-            transform: translateY(-10px);
-        }
-
-        .hero-image:before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 3px dashed #4a90e2;
-            border-radius: 20px;
-            top: 15px;
-            left: 15px;
-            z-index: -1;
-        }
-
-        .tag {
-            display: inline-block;
-            background-color: #f0f8ff;
-            color: #4a90e2;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.1);
-        }
-
-        h1 {
-            font-size: 48px;
-            color: #333;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        h1 span {
-            color: #4a90e2;
-            position: relative;
-            display: inline-block;
-        }
-
-        h1 span:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 10px;
-            bottom: 5px;
-            left: 0;
-            background-color: #e6f2ff;
-            z-index: -1;
-            border-radius: 10px;
-        }
-
-        .description {
-            font-size: 18px;
-            color: #6a6a6a;
-            margin-bottom: 40px;
-            max-width: 600px;
-        }
-
-        /* Button */
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #4a90e2, #5da0e2);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.2);
-        }
-
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(74, 144, 226, 0.3);
-        }
-
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin: 80px 0;
-        }
-
-        .feature-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(74, 74, 74, 0.05);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(74, 74, 74, 0.1);
-        }
-
-        .feature-card:before {
-            content: '';
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-color: #e6f2ff;
-            border-radius: 50%;
-            top: -50px;
-            right: -50px;
-            z-index: 0;
-            transition: all 0.5s ease;
-        }
-
-        .feature-card:hover:before {
-            width: 150px;
-            height: 150px;
-        }
-
-        .feature-icon {
-            font-size: 40px;
-            margin-bottom: 20px;
-            color: #4a90e2;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-title {
-            font-size: 22px;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-desc {
-            font-size: 16px;
-            color: #6a6a6a;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Services Section */
-        .services-section {
-            margin: 80px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 50px;
-            position: relative;
-        }
-
-        .section-title:after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, #4a90e2, #5da0e2);
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .service-card {
-            background-color: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(74, 74, 74, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(74, 74, 74, 0.1);
-        }
-
-        .service-image {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .service-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .service-card:hover .service-image img {
-            transform: scale(1.1);
-        }
-
-        .service-content {
-            padding: 25px;
-        }
-
-        .service-title {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .service-desc {
-            color: #6a6a6a;
-            margin-bottom: 20px;
-        }
-
-        .learn-more {
-            color: #4a90e2;
-            font-weight: 600;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .learn-more:after {
-            content: '→';
-            margin-left: 5px;
-            transition: transform 0.3s ease;
-            display: inline-block;
-        }
-
-        .learn-more:hover:after {
-            transform: translateX(5px);
-        }
-
-        /* Testimonials */
-        .testimonial {
-            background-color: #f9f9f9;
-            padding: 60px 0;
-            margin: 80px 0;
-            border-radius: 20px;
-        }
-
-        .testimonial-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .testimonial-text {
-            font-size: 20px;
-            font-style: italic;
-            color: #555;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .testimonial-text:before,
-        .testimonial-text:after {
-            content: '"';
-            font-size: 60px;
-            color: #4a90e2;
-            opacity: 0.2;
-            position: absolute;
-        }
-
-        .testimonial-text:before {
-            top: -20px;
-            left: -15px;
-        }
-
-        .testimonial-text:after {
-            bottom: -40px;
-            right: -15px;
-        }
-
-        .testimonial-author {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .testimonial-role {
-            color: #6a6a6a;
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        media (max-width: 992px) {
-            .hero {
-                flex-direction: column;
-            }
-
-            .hero-image:before {
-                display: none;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-        }
-
-        media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Decorative Elements -->
-    <div class="decoration circle-1"></div>
-    <div class="decoration circle-2"></div>
-
+<!-- ══ HOW IT WORKS ══ -->
+<section class="process-section">
     <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <div class="tag">Compassionate Care</div>
-                <h1>Dedicated <span>Elder Care</span> Services for Your Loved Ones</h1>
-                <p class="description">Our professional and caring staff provides personalized assistance to seniors, ensuring they maintain dignity, independence, and quality of life in the comfort of their own homes.</p>
-                <a href="#" class="btn">Book Caretaker Today</a>
-            </div>
-            <div class="hero-image">
-                <img src="/Images/care.jpg" alt="Caregiver with senior">
-            </div>
-        </section>
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <div class="section-eyebrow">Our Process</div>
+                <h2 class="section-title">How We Ensure Quality Care</h2>
+                <p class="section-sub" style="margin-bottom:36px;">Every caretaker goes through a rigorous process before serving your family</p>
 
-        <!-- Features -->
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">👨‍⚕️</div>
-                <h3 class="feature-title">Professional Care</h3>
-                <p class="feature-desc">Our caregivers are certified, experienced, and specially trained to provide exceptional care for seniors.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏠</div>
-                <h3 class="feature-title">In-Home Support</h3>
-                <p class="feature-desc">We provide personalized care in the familiar environment of your loved one's home.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <h3 class="feature-title">Flexible Care Plans</h3>
-                <p class="feature-desc">From hourly assistance to 24/7 care, our services adapt to your family's changing needs.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">❤️</div>
-                <h3 class="feature-title">Compassionate Approach</h3>
-                <p class="feature-desc">We treat each senior with dignity, respect, and genuine care for their wellbeing.</p>
-            </div>
-        </section>
-
-        <!-- Services Section -->
-        @* <section class="services-section">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-image">
-                        <img src="/api/placeholder/350/200" alt="Personal Care">
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title">Personal Care</h3>
-                        <p class="service-desc">Assistance with daily activities including bathing, dressing, grooming, medication reminders, and mobility support.</p>
-                        <a href="#" class="learn-more">Learn More</a>
+                <div class="process-step">
+                    <div class="process-num">1</div>
+                    <div>
+                        <div class="process-title">Application & Document Upload</div>
+                        <p class="process-desc">Caretakers apply with professional credentials, Aadhaar, police clearance, and nursing license.</p>
                     </div>
                 </div>
-                <div class="service-card">
-                    <div class="service-image">
-                        <img src="/api/placeholder/350/200" alt="Companion Care">
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title">Companion Care</h3>
-                        <p class="service-desc">Friendly conversation, recreational activities, accompaniment to appointments, and social engagement.</p>
-                        <a href="#" class="learn-more">Learn More</a>
+                <div class="process-step">
+                    <div class="process-num">2</div>
+                    <div>
+                        <div class="process-title">Admin Verification</div>
+                        <p class="process-desc">Our team reviews all documents and approves only qualified, trustworthy professionals.</p>
                     </div>
                 </div>
-                <div class="service-card">
-                    <div class="service-image">
-                        <img src="/api/placeholder/350/200" alt="Specialized Care">
+                <div class="process-step">
+                    <div class="process-num">3</div>
+                    <div>
+                        <div class="process-title">Profile Goes Live</div>
+                        <p class="process-desc">Approved caretakers appear in our browse directory for families to view and book.</p>
                     </div>
-                    <div class="service-content">
-                        <h3 class="service-title">Specialized Care</h3>
-                        <p class="service-desc">Dedicated services for those with Alzheimer's, Parkinson's, and other conditions requiring specialized attention.</p>
-                        <a href="#" class="learn-more">Learn More</a>
+                </div>
+                <div class="process-step">
+                    <div class="process-num">4</div>
+                    <div>
+                        <div class="process-title">Booking & Care Begins</div>
+                        <p class="process-desc">Family books, caretaker confirms, and professional care begins at your doorstep.</p>
                     </div>
                 </div>
             </div>
-        </section>
- *@
-        <!-- Testimonial -->
-        @* <section class="testimonial">
-            <div class="testimonial-content">
-                <p class="testimonial-text">The caregivers from Golden Years have been a blessing for our family. Their compassion, professionalism, and dedication have allowed my mother to remain in her home while receiving the support she needs. I cannot recommend them highly enough.</p>
-                <p class="testimonial-author">Margaret Wilson</p>
-                <p class="testimonial-role">Daughter of client</p>
+            <div class="col-md-6">
+                <div class="process-image">
+                    <img src="/Images/care.jpg"
+                         onerror="this.src='https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=700&q=80'"
+                         alt="Caretaker with patient" />
+                </div>
             </div>
-        </section> *@
+        </div>
     </div>
-</body>
-</html>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section class="pricing-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="section-eyebrow">Pricing</div>
+            <h2 class="section-title">Simple, Transparent Pricing</h2>
+            <p class="section-sub">No hidden fees — pay only for the care your loved one needs</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="price-card">
+                    <div class="price-plan">Basic</div>
+                    <div class="price-amount">₹400</div>
+                    <div class="price-period">per day · 4–6 hours</div>
+                    <ul class="price-features">
+                        <li>Medication reminders</li>
+                        <li>Meal preparation</li>
+                        <li>Personal hygiene</li>
+                        <li>Basic vitals check</li>
+                    </ul>
+                    <a asp-controller="Caretaker" asp-action="CaretakerData" class="btn-book outline">
+                        Browse Caretakers
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="price-card featured">
+                    <div class="price-badge">Most Popular</div>
+                    <div class="price-plan">Standard</div>
+                    <div class="price-amount">₹700</div>
+                    <div class="price-period">per day · 8–10 hours</div>
+                    <ul class="price-features">
+                        <li>Everything in Basic</li>
+                        <li>Physiotherapy support</li>
+                        <li>Mobility assistance</li>
+                        <li>Companionship care</li>
+                        <li>Daily family reports</li>
+                    </ul>
+                    <a asp-controller="Caretaker" asp-action="CaretakerData" class="btn-book">
+                        Book Now
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="price-card">
+                    <div class="price-plan">Premium</div>
+                    <div class="price-amount">₹1,200</div>
+                    <div class="price-period">per day · 24 hours</div>
+                    <ul class="price-features">
+                        <li>Everything in Standard</li>
+                        <li>24/7 overnight care</li>
+                        <li>Dementia specialist</li>
+                        <li>Doctor coordination</li>
+                        <li>Emergency response</li>
+                    </ul>
+                    <a asp-controller="Caretaker" asp-action="CaretakerData" class="btn-book outline">
+                        Browse Caretakers
+                    </a>
+                </div>
+            </div>
+        </div>
+        <p class="text-center mt-4" style="font-size:0.82rem;color:#999;">
+            * Final pricing depends on the individual caretaker's rate. Browse profiles to see exact pricing.
+        </p>
+    </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Find the Right Caretaker Today</h2>
+        <p>Browse verified profiles and book a caretaker that fits your family's needs perfectly.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Caretaker" asp-action="CaretakerData"
+               style="background:var(--ec-accent);color:#1e3a35;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:0.95rem;">
+                Browse Caretakers
+            </a>
+            <a asp-controller="Home" asp-action="Login"
+               style="border:2px solid rgba(255,255,255,0.45);color:white;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:0.95rem;">
+                Login / Register
+            </a>
+        </div>
+    </div>
+</section>

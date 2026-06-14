@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using CareProjct.web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,7 +14,7 @@ internal class Program
         
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        builder.Services.AddDbContext<Applicationdbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Dbconnection")));
+        builder.Services.AddDbContext<Applicationdbcontext>(options => options.UseSqlite("Data Source=careservice.db"));
         builder.Services.AddDistributedMemoryCache();//Required for session state
         builder.Services.AddSession(options => {
             options.IdleTimeout = TimeSpan.FromMinutes(30); options.Cookie.HttpOnly = true;

@@ -1,0 +1,314 @@
+@model List<CareProjct.web.Models.OrderConfirm>
+
+<style>
+    :root { --primary: #36625a; --accent: #f8b84c; --bg: #f5f0e3; }
+    body { background: var(--bg); }
+    .page-wrap { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+    .page-title { color: var(--primary); font-weight: 700; font-size: 1.8rem; margin-bottom: 5px; }
+    .page-sub { color: #888; margin-bottom: 30px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 5px; background: white; border-radius: 10px; padding: 6px; box-shadow: 0 3px 12px rgba(0,0,0,0.06); margin-bottom: 30px; flex-wrap: wrap; }
+    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 7px; font-weight: 600; color: #888; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; white-space: nowrap; }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Booking Card */
+    .booking-card { background: white; border-radius: 14px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); border-left: 5px solid var(--accent); }
+    .booking-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .booking-id { color: #999; font-size: 0.82rem; }
+    .booking-nurse { color: var(--primary); font-weight: 700; font-size: 1.15rem; margin: 3px 0; }
+
+    .status-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+    .status-Requested { background: #fff3cd; color: #856404; border-left-color: #ffc107; }
+    .status-Accepted { background: #d4edda; color: #155724; }
+    .status-ServiceStarted { background: #cce5ff; color: #004085; }
+    .status-Completed { background: #d1ecf1; color: #0c5460; }
+    .status-Rejected { background: #f8d7da; color: #721c24; }
+    .status-Cancelled { background: #e2e3e5; color: #383d41; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 18px; }
+    .info-cell label { font-size: 0.76rem; color: #999; display: block; }
+    .info-cell strong { color: var(--primary); font-size: 0.9rem; }
+
+    .payment-row { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 8px; padding: 12px 16px; margin-top: 12px; }
+    .amount { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+    .payment-status { padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; }
+    .pay-Paid { background: #d4edda; color: #155724; }
+    .pay-Pending { background: #fff3cd; color: #856404; }
+    .pay-Refunded { background: #cce5ff; color: #004085; }
+
+    .rejection-note { background: #f8d7da; border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 0.85rem; color: #721c24; }
+    .progress-bar-wrap { background: #f0f0f0; border-radius: 6px; height: 8px; margin-top: 12px; overflow: hidden; }
+    .progress-bar-fill { height: 8px; border-radius: 6px; background: var(--primary); transition: width 0.5s ease; }
+
+    .empty-box { text-align: center; padding: 60px 20px; background: white; border-radius: 14px; }
+    .empty-box .icon { font-size: 3rem; margin-bottom: 15px; }
+
+    @@media (max-width: 600px) {
+        .info-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+
+<div class="page-wrap">
+    <div class="page-title">📅 My Bookings</div>
+    <div class="page-sub">Track all your nurse booking requests and service history</div>
+
+    @{
+        var active    = Model.Where(b => b.BookingStatus == "Requested"
+                                     || b.BookingStatus == "Accepted"
+                                     || b.BookingStatus == "ServiceStarted").ToList();
+        var completed = Model.Where(b => b.BookingStatus == "Completed").ToList();
+        var rejected  = Model.Where(b => b.BookingStatus == "Rejected"
+                                     || b.BookingStatus == "Cancelled").ToList();
+    }
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('active', this)">
+            🔔 Active (@active.Count)
+        </button>
+        <button class="tab-btn" onclick="showTab('completed', this)">
+            ✅ Completed (@completed.Count)
+        </button>
+        <button class="tab-btn" onclick="showTab('rejected', this)">
+            ❌ Rejected/Cancelled (@rejected.Count)
+        </button>
+    </div>
+
+    <!-- Active Tab -->
+    <div class="tab-content active" id="tab-active">
+        @if (active.Any())
+        {
+            @foreach (var b in active)
+            {
+                
+                var progress = b.BookingStatus == "Requested" ? 25
+                 : b.BookingStatus == "Accepted"  ? 60
+                 : 85;
+                var statusColor = b.BookingStatus == "Requested" ? "#ffc107"
+                    : b.BookingStatus == "Accepted"  ? "#28a745"
+                    : "#007bff";
+                    
+                <div class="booking-card" style="border-left-color:@statusColor;">
+                    <div class="booking-header">
+                        <div>
+                            <div class="booking-id">Booking #@b.Id &nbsp;|&nbsp; @b.OrderDate.ToString("dd MMM yyyy")</div>
+                            <div class="booking-nurse">🏥 Nurse Booking — Elder Care</div>
+                            <div style="color:#888;font-size:0.88rem;">Patient: @b.PatientName (@b.PatientAge yrs)</div>
+                        </div>
+                        <span class="status-badge status-@b.BookingStatus">@b.BookingStatus</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div style="font-size:0.8rem;color:#888;margin-bottom:5px;">
+                        Booking Progress
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill"
+                             style="width:@progress%;background:@statusColor;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#bbb;margin-top:4px;margin-bottom:18px;">
+                        <span>Requested</span>
+                        <span>Accepted</span>
+                        <span>In Progress</span>
+                        <span>Completed</span>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-cell">
+                            <label>Patient Condition</label>
+                            <strong>@b.PatientCondition</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Shift Type</label>
+                            <strong>@b.ShiftType</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Duration</label>
+                            <strong>@b.NumberOfDays days</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Start Date</label>
+                            <strong>@b.StartDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>End Date</label>
+                            <strong>@b.EndDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Service Address</label>
+                            <strong>@b.ServiceAddress</strong>
+                        </div>
+                    </div>
+
+                    @if (b.PatientNotes != null)
+                    {
+                        <div style="background:#f8f9fa;border-radius:8px;padding:10px 14px;font-size:0.85rem;color:#666;margin-bottom:12px;">
+                            📝 Notes: @b.PatientNotes
+                        </div>
+                    }
+
+                    <div class="payment-row">
+                        <div>
+                            <div style="font-size:0.8rem;color:#999;">Total Amount</div>
+                            <div class="amount">₹@b.TotalAmount</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.8rem;color:#999;margin-bottom:4px;">Payment</div>
+                            <span class="payment-status pay-@b.PaymentStatus">@b.PaymentStatus</span>
+                        </div>
+                    </div>
+
+                    @if (b.BookingStatus == "Requested")
+                    {
+                        <div style="background:#fff3cd;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:0.85rem;color:#856404;">
+                            ⏳ Waiting for nurse to accept your request. You will be notified once confirmed.
+                        </div>
+                    }
+                    @if (b.BookingStatus == "Accepted")
+                    {
+                        <div style="background:#d4edda;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:0.85rem;color:#155724;">
+                            ✅ Nurse has accepted! Service starts on @b.StartDate.ToString("dd MMM yyyy").
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-box">
+                <div class="icon">📭</div>
+                <h4 style="color:var(--primary);">No Active Bookings</h4>
+                <p class="text-muted">You have no ongoing or pending booking requests.</p>
+                <a href="/Caretaker/CaretakerData"
+                   style="background:var(--primary);color:white;padding:11px 25px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;margin-top:15px;">
+                    Browse Nurses
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Completed Tab -->
+    <div class="tab-content" id="tab-completed">
+        @if (completed.Any())
+        {
+            @foreach (var b in completed)
+            {
+                <div class="booking-card" style="border-left-color:#28a745;">
+                    <div class="booking-header">
+                        <div>
+                            <div class="booking-id">Booking #@b.Id &nbsp;|&nbsp; @b.OrderDate.ToString("dd MMM yyyy")</div>
+                            <div class="booking-nurse">🏥 Elder Care — Completed</div>
+                            <div style="color:#888;font-size:0.88rem;">Patient: @b.PatientName (@b.PatientAge yrs)</div>
+                        </div>
+                        <span class="status-badge" style="background:#d1ecf1;color:#0c5460;">✅ Completed</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-cell">
+                            <label>Condition</label>
+                            <strong>@b.PatientCondition</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Duration</label>
+                            <strong>@b.NumberOfDays days</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Shift</label>
+                            <strong>@b.ShiftType</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Service Dates</label>
+                            <strong>@b.StartDate.ToString("dd MMM") — @b.EndDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Address</label>
+                            <strong>@b.ServiceAddress</strong>
+                        </div>
+                    </div>
+                    <div class="payment-row">
+                        <div>
+                            <div style="font-size:0.8rem;color:#999;">Total Paid</div>
+                            <div class="amount">₹@b.TotalAmount</div>
+                        </div>
+                        <span class="payment-status pay-@b.PaymentStatus">@b.PaymentStatus</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-box">
+                <div class="icon">📋</div>
+                <h4 style="color:var(--primary);">No Completed Bookings Yet</h4>
+                <p class="text-muted">Your completed service history will appear here.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Rejected Tab -->
+    <div class="tab-content" id="tab-rejected">
+        @if (rejected.Any())
+        {
+            @foreach (var b in rejected)
+            {
+                <div class="booking-card" style="border-left-color:#dc3545;">
+                    <div class="booking-header">
+                        <div>
+                            <div class="booking-id">Booking #@b.Id &nbsp;|&nbsp; @b.OrderDate.ToString("dd MMM yyyy")</div>
+                            <div class="booking-nurse">🏥 Elder Care</div>
+                        </div>
+                        <span class="status-badge status-@b.BookingStatus">@b.BookingStatus</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-cell">
+                            <label>Patient</label>
+                            <strong>@b.PatientName</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Dates</label>
+                            <strong>@b.StartDate.ToString("dd MMM") — @b.EndDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+                        <div class="info-cell">
+                            <label>Amount</label>
+                            <strong>₹@b.TotalAmount</strong>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(b.NurseRejectionReason))
+                    {
+                        <div class="rejection-note">
+                            ❌ Rejection Reason: @b.NurseRejectionReason
+                        </div>
+                    }
+                    <div style="margin-top:15px;">
+                        <a href="/Caretaker/CaretakerData"
+                           style="background:var(--primary);color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.9rem;">
+                            Find Another Nurse
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-box">
+                <div class="icon">✨</div>
+                <h4 style="color:var(--primary);">No Rejected Bookings</h4>
+                <p class="text-muted">None of your bookings have been rejected.</p>
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    function showTab(name, btn) {
+        document.querySelectorAll('.tab-content')
+            .forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn')
+            .forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        btn.classList.add('active');
+    }
+</script>

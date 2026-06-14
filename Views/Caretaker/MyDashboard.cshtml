@@ -1,0 +1,241 @@
+@model CareProjct.web.Models.CaretakerDashboardViewModel
+
+<style>
+    :root { --primary: #36625a; --accent: #f8b84c; --bg: #f5f0e3; --light: rgba(93,140,130,0.1); }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .dash-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .profile-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.07); display: flex; gap: 25px; align-items: center; margin-bottom: 30px; }
+    .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); }
+    .profile-info h3 { color: var(--primary); font-weight: 700; margin-bottom: 5px; }
+    .badge-verified { background: #28a745; color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .badge-pending { background: #ffc107; color: #333; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+    .stat-box { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 3px 15px rgba(0,0,0,0.06); }
+    .stat-box h2 { color: var(--primary); font-weight: 700; font-size: 2rem; margin: 0; }
+    .stat-box p { color: #888; margin: 5px 0 0; font-size: 0.9rem; }
+    .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.07); margin-bottom: 25px; }
+    .section-header { color: var(--primary); font-weight: 700; font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px; }
+    .booking-card { border: 1px solid #e8e8e8; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+    .booking-card:hover { border-color: var(--primary); box-shadow: 0 3px 12px rgba(54,98,90,0.1); }
+    .info-row { display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 12px; }
+    .info-item label { font-size: 0.78rem; color: #888; display: block; }
+    .info-item strong { color: var(--primary); }
+    .btn-accept { background: #28a745; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 600; cursor: pointer; }
+    .btn-reject { background: #dc3545; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 600; cursor: pointer; }
+    .btn-action { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 600; cursor: pointer; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .status-requested { background: #fff3cd; color: #856404; }
+    .status-accepted { background: #d4edda; color: #155724; }
+    .status-started { background: #cce5ff; color: #004085; }
+    .status-completed { background: #d1ecf1; color: #0c5460; }
+    .empty-msg { text-align: center; color: #aaa; padding: 30px; }
+    .reject-modal { display:none; background: rgba(0,0,0,0.5); position: fixed; top:0; left:0; width:100%; height:100%; z-index:999; align-items:center; justify-content:center; }
+    .reject-modal.show { display:flex; }
+    .reject-box { background:white; border-radius:12px; padding:30px; width:420px; }
+</style>
+
+<div class="dash-container">
+
+    <!-- Profile Summary -->
+    <div class="profile-card">
+        <img src="@Model.Profile.ImagePath" class="profile-img" alt="Profile">
+        <div class="profile-info">
+            <h3>@Model.Profile.FullName</h3>
+            <p style="color:#666;margin:4px 0;">@Model.Profile.Qualification &nbsp;|&nbsp; @Model.Profile.Experience experience</p>
+            <p style="color:#666;margin:4px 0;">📍 @Model.Profile.City &nbsp;|&nbsp; 📞 @Model.Profile.ContactNumber</p>
+            <p style="margin:8px 0;">
+                @if (Model.Profile.VerificationStatus == "Approved")
+                {
+                    <span class="badge-verified">✅ Verified Nurse</span>
+                }
+                else
+                {
+                    <span class="badge-pending">⏳ @Model.Profile.VerificationStatus</span>
+                }
+                &nbsp;
+                <span style="background:var(--light);color:var(--primary);padding:4px 12px;border-radius:20px;font-size:0.8rem;">Elder Care Specialist</span>
+            </p>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:1.3rem;font-weight:700;color:var(--primary);">₹@Model.Profile.Price<span style="font-size:0.8rem;font-weight:400;">/day</span></div>
+            <a href="#" style="font-size:0.85rem;color:var(--primary);">Edit Profile</a>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <h2>@Model.NewRequests.Count</h2>
+            <p>New Requests</p>
+        </div>
+        <div class="stat-box">
+            <h2>@Model.TotalPatientsServed</h2>
+            <p>Patients Served</p>
+        </div>
+        <div class="stat-box">
+            <h2>₹@Model.TotalEarned</h2>
+            <p>Total Earned</p>
+        </div>
+    </div>
+
+    <!-- New Booking Requests -->
+    <div class="section-card">
+        <div class="section-header">🔔 New Booking Requests (@Model.NewRequests.Count)</div>
+        @if (Model.NewRequests.Any())
+        {
+            @foreach (var b in Model.NewRequests)
+            {
+                <div class="booking-card">
+                    <div class="info-row">
+                        <div class="info-item"><label>Patient Name</label><strong>@b.PatientName</strong></div>
+                        <div class="info-item"><label>Age</label><strong>@b.PatientAge years</strong></div>
+                        <div class="info-item"><label>Condition</label><strong>@b.PatientCondition</strong></div>
+                        <div class="info-item"><label>Shift</label><strong>@b.ShiftType</strong></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item"><label>Service Address</label><strong>@b.ServiceAddress</strong></div>
+                        <div class="info-item"><label>Start Date</label><strong>@b.StartDate.ToString("dd MMM yyyy")</strong></div>
+                        <div class="info-item"><label>End Date</label><strong>@b.EndDate.ToString("dd MMM yyyy")</strong></div>
+                        <div class="info-item"><label>Duration</label><strong>@b.NumberOfDays days</strong></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item"><label>Customer</label><strong>@b.FullName</strong></div>
+                        <div class="info-item"><label>Phone</label><strong>@b.PhoneNumber</strong></div>
+                        <div class="info-item"><label>Emergency Contact</label><strong>@b.EmergencyContactName — @b.EmergencyContactPhone</strong></div>
+                        <div class="info-item"><label>Amount You Earn</label><strong style="color:#28a745;">₹@b.TotalAmount</strong></div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(b.PatientNotes))
+                    {
+                        <p style="font-size:0.85rem;color:#666;background:#f8f9fa;padding:8px;border-radius:6px;margin-bottom:12px;">
+                            📝 Special Notes: @b.PatientNotes
+                        </p>
+                    }
+                    <div style="display:flex;gap:10px;">
+                        <form asp-action="AcceptBooking" asp-controller="Caretaker" method="post" style="display:inline;">
+                            <input type="hidden" name="bookingId" value="@b.Id">
+                            <button type="submit" class="btn-accept">✔ Accept Booking</button>
+                        </form>
+                        <button class="btn-reject" onclick="showRejectModal(@b.Id)">✖ Reject</button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-msg">No new booking requests at the moment.</div>
+        }
+    </div>
+
+    <!-- Active Assignments -->
+    <div class="section-card">
+        <div class="section-header">🏥 Active Assignments (@Model.ActiveBookings.Count)</div>
+        @if (Model.ActiveBookings.Any())
+        {
+            @foreach (var b in Model.ActiveBookings)
+            {
+                <div class="booking-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <strong style="font-size:1.05rem;color:var(--primary);">Patient: @b.PatientName (@b.PatientAge yrs)</strong>
+                        <span class="status-badge @(b.BookingStatus == "ServiceStarted" ? "status-started" : "status-accepted")">@b.BookingStatus</span>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item"><label>Condition</label><strong>@b.PatientCondition</strong></div>
+                        <div class="info-item"><label>Address</label><strong>@b.ServiceAddress</strong></div>
+                        <div class="info-item"><label>Dates</label><strong>@b.StartDate.ToString("dd MMM") — @b.EndDate.ToString("dd MMM yyyy")</strong></div>
+                        <div class="info-item"><label>Days</label><strong>@b.NumberOfDays days (@b.ShiftType)</strong></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item"><label>Family Contact</label><strong>@b.FullName — @b.PhoneNumber</strong></div>
+                        <div class="info-item"><label>Emergency</label><strong>@b.EmergencyContactName — @b.EmergencyContactPhone</strong></div>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:10px;">
+                        @if (b.BookingStatus == "Accepted")
+                        {
+                            <form asp-action="StartService" asp-controller="Caretaker" method="post">
+                                <input type="hidden" name="bookingId" value="@b.Id">
+                                <button type="submit" class="btn-action">🏁 Mark Service Started</button>
+                            </form>
+                        }
+                        @if (b.BookingStatus == "ServiceStarted")
+                        {
+                            <form asp-action="CompleteService" asp-controller="Caretaker" method="post">
+                                <input type="hidden" name="bookingId" value="@b.Id">
+                                <button type="submit" class="btn-action">✅ Mark Completed</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-msg">No active assignments currently.</div>
+        }
+    </div>
+
+    <!-- Completed Bookings -->
+    <div class="section-card">
+        <div class="section-header">✅ Completed Assignments (@Model.CompletedBookings.Count)</div>
+        @if (Model.CompletedBookings.Any())
+        {
+            <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+                <thead>
+                    <tr style="background:var(--light);color:var(--primary);">
+                        <th style="padding:10px;text-align:left;">Patient</th>
+                        <th style="padding:10px;text-align:left;">Condition</th>
+                        <th style="padding:10px;text-align:left;">Dates</th>
+                        <th style="padding:10px;text-align:left;">Days</th>
+                        <th style="padding:10px;text-align:left;">Amount</th>
+                        <th style="padding:10px;text-align:left;">Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in Model.CompletedBookings)
+                    {
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:10px;">@b.PatientName</td>
+                            <td style="padding:10px;">@b.PatientCondition</td>
+                            <td style="padding:10px;">@b.StartDate.ToString("dd MMM") — @b.EndDate.ToString("dd MMM yyyy")</td>
+                            <td style="padding:10px;">@b.NumberOfDays days</td>
+                            <td style="padding:10px;color:#28a745;font-weight:700;">₹@b.TotalAmount</td>
+                            <td style="padding:10px;">
+                                <span style="background:@(b.PaymentStatus=="Paid"?"#d4edda":"#fff3cd");color:@(b.PaymentStatus=="Paid"?"#155724":"#856404");padding:3px 10px;border-radius:12px;font-size:0.8rem;">@b.PaymentStatus</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-msg">No completed assignments yet.</div>
+        }
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="reject-modal" id="rejectModal">
+    <div class="reject-box">
+        <h5 style="color:var(--primary);margin-bottom:15px;">Reason for Rejection</h5>
+        <form asp-action="RejectBooking" asp-controller="Caretaker" method="post">
+            <input type="hidden" name="bookingId" id="rejectBookingId">
+            <textarea name="reason" class="form-control mb-3" rows="3"
+                placeholder="Example: Already have another booking on those dates" required></textarea>
+            <div style="display:flex;gap:10px;">
+                <button type="submit" class="btn-reject" style="flex:1;">Submit Rejection</button>
+                <button type="button" onclick="closeRejectModal()"
+                    style="flex:1;background:#6c757d;color:white;border:none;border-radius:8px;padding:8px;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showRejectModal(id) {
+        document.getElementById('rejectBookingId').value = id;
+        document.getElementById('rejectModal').classList.add('show');
+    }
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.remove('show');
+    }
+</script>

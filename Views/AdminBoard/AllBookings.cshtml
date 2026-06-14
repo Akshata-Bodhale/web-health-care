@@ -1,0 +1,100 @@
+@model List<CareProjct.web.Models.RecentBookingItem>
+@{
+    ViewData["Title"] = "All Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="background:#f1f5f9; min-height:100vh; padding:36px 0;">
+<div class="container-fluid px-4">
+
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:12px;">
+        <div>
+            <h2 style="font-weight:800; color:#1a3c5e; margin:0 0 4px;">📅 All Bookings</h2>
+            <p style="color:#64748b; margin:0;">@Model.Count total bookings on the platform</p>
+        </div>
+        <a asp-controller="AdminBoard" asp-action="AdminDashboard"
+           style="background:#1a3c5e; color:#fff; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:600; font-size:.9rem;">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div style="background:#fff; border-radius:12px; padding:20px 24px; border:1px solid #e2e8f0; margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <input type="text" id="searchInput" placeholder="🔍 Search by customer or nurse..." onkeyup="filterTable()"
+               style="border:1px solid #e2e8f0; border-radius:8px; padding:10px 16px; font-size:.9rem; flex:1; min-width:200px; outline:none;" />
+        <select id="statusFilter" onchange="filterTable()"
+                style="border:1px solid #e2e8f0; border-radius:8px; padding:10px 16px; font-size:.9rem; outline:none;">
+            <option value="">All Statuses</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Pending">Pending</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div style="background:#fff; border-radius:14px; padding:0; border:1px solid #e2e8f0; overflow:hidden;">
+        @if (!Model.Any())
+        {
+            <div style="text-align:center; padding:64px 24px; color:#94a3b8;">
+                <div style="font-size:3rem; margin-bottom:16px;">📅</div>
+                <p style="font-size:1.1rem; font-weight:600; color:#475569; margin-bottom:8px;">No bookings found</p>
+                <p style="font-size:.9rem;">Bookings will appear here once customers start booking caretakers.</p>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover" id="bookingsTable" style="margin:0;">
+                <thead style="background:#f8fafc;">
+                    <tr>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">#</th>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">Customer</th>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">Caretaker</th>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">Date</th>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">Amount</th>
+                        <th style="padding:16px 20px; color:#64748b; font-size:.8rem; font-weight:700; text-transform:uppercase; border:none;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in Model)
+                    {
+                        var bg   = b.Status == "Confirmed" ? "#dcfce7" : b.Status == "Rejected" ? "#fee2e2" : "#fef3c7";
+                        var fg   = b.Status == "Confirmed" ? "#166534" : b.Status == "Rejected" ? "#991b1b" : "#92400e";
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+                            <td style="padding:16px 20px; color:#94a3b8; font-size:.9rem;">#@b.BookingId</td>
+                            <td style="padding:16px 20px;">
+                                <div style="font-weight:600; color:#1e293b; font-size:.9rem;">@b.CustomerName</div>
+                            </td>
+                            <td style="padding:16px 20px;">
+                                <div style="font-weight:600; color:#1e293b; font-size:.9rem;">@b.NurseName</div>
+                            </td>
+                            <td style="padding:16px 20px; color:#64748b; font-size:.9rem;">@b.BookingDate.ToString("dd MMM yyyy")</td>
+                            <td style="padding:16px 20px; font-weight:700; color:#1a3c5e; font-size:.9rem;">₹@b.Amount</td>
+                            <td style="padding:16px 20px;">
+                                <span style="background:@bg; color:@fg; padding:5px 14px; border-radius:20px; font-size:.8rem; font-weight:600;">
+                                    @b.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>
+</div>
+
+<script>
+function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value.toLowerCase();
+    const rows   = document.querySelectorAll('#bookingsTable tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const matchSearch = text.includes(search);
+        const matchStatus = !status || text.includes(status);
+        row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+    });
+}
+</script>

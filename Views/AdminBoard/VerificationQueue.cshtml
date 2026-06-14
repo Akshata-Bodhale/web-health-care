@@ -1,0 +1,131 @@
+@model List<CareProjct.web.Models.Caretaker>
+
+<style>
+    body { background: #f5f0e3; font-family: 'Segoe UI', sans-serif; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    h2 { color: #36625a; font-weight: 700; margin-bottom: 25px; }
+    .nurse-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
+    .nurse-header { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
+    .nurse-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+    .info-box label { font-size: 0.78rem; color: #888; display: block; }
+    .info-box strong { color: #36625a; }
+    .doc-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .doc-link { background: #e8f4f2; color: #36625a; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+    .doc-link:hover { background: #36625a; color: white; }
+    .agree-list { background: #f8f9fa; border-radius: 8px; padding: 12px 20px; margin-bottom: 20px; font-size: 0.88rem; }
+    .agree-list li { padding: 4px 0; color: #444; }
+    .btn-approve { background: #28a745; color: white; border: none; border-radius: 8px; padding: 10px 25px; font-weight: 600; cursor: pointer; }
+    .btn-reject { background: #dc3545; color: white; border: none; border-radius: 8px; padding: 10px 25px; font-weight: 600; cursor: pointer; }
+    .reject-form { display:none; margin-top:15px; background:#fff5f5; border-radius:8px; padding:15px; }
+    .reject-form.show { display:block; }
+</style>
+
+<div class="container">
+    <h2>🔍 Nurse Verification Queue (@Model.Count pending)</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="background:#d4edda;color:#155724;padding:12px 20px;border-radius:8px;margin-bottom:20px;">
+            ✅ @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Info"] != null)
+    {
+        <div style="background:#fff3cd;color:#856404;padding:12px 20px;border-radius:8px;margin-bottom:20px;">
+            ℹ️ @TempData["Info"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div style="text-align:center;padding:60px;background:white;border-radius:12px;color:#aaa;">
+            No pending nurse applications at the moment.
+        </div>
+    }
+
+    @foreach (var nurse in Model)
+    {
+        <div class="nurse-card">
+            <div class="nurse-header">
+                <img src="@nurse.ImagePath" class="nurse-img" alt="Photo">
+                <div>
+                    <h4 style="color:#36625a;margin:0;">@nurse.FullName</h4>
+                    <p style="margin:4px 0;color:#666;">@nurse.Qualification &nbsp;|&nbsp; @nurse.Experience</p>
+                    <p style="margin:4px 0;color:#666;">📍 @nurse.City &nbsp;|&nbsp; 📞 @nurse.ContactNumber</p>
+                    <span style="background:#fff3cd;color:#856404;padding:3px 12px;border-radius:12px;font-size:0.8rem;">@nurse.VerificationStatus</span>
+                </div>
+                <div style="margin-left:auto;text-align:right;">
+                    <div style="font-size:0.85rem;color:#666;">Registered on</div>
+                    <strong style="color:#36625a;">Elder Care</strong>
+                    <div style="font-size:0.85rem;color:#666;margin-top:5px;">License No:</div>
+                    <strong>@nurse.LicenseNumber</strong>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box"><label>Email</label><strong>@nurse.Email</strong></div>
+                <div class="info-box"><label>Date of Birth</label><strong>@nurse.DateOfBirth.ToString("dd MMM yyyy")</strong></div>
+                <div class="info-box"><label>Gender</label><strong>@nurse.Gender</strong></div>
+                <div class="info-box"><label>Daily Rate</label><strong>₹@nurse.Price/day</strong></div>
+                <div class="info-box"><label>Bank</label><strong>@nurse.BankName</strong></div>
+                <div class="info-box"><label>IFSC</label><strong>@nurse.IFSCCode</strong></div>
+            </div>
+
+            <!-- Document Links -->
+            <div>
+                <strong style="color:#36625a;font-size:0.9rem;">Uploaded Documents:</strong>
+                <div class="doc-links mt-2">
+                    @if (!string.IsNullOrEmpty(nurse.LicenseDocumentPath))
+                    {
+                        <a href="@nurse.LicenseDocumentPath" target="_blank" class="doc-link">📄 Nursing License</a>
+                    }
+                    @if (!string.IsNullOrEmpty(nurse.AadhaarPath))
+                    {
+                        <a href="@nurse.AadhaarPath" target="_blank" class="doc-link">🪪 Aadhaar Card</a>
+                    }
+                    @if (!string.IsNullOrEmpty(nurse.PoliceClearancePath))
+                    {
+                        <a href="@nurse.PoliceClearancePath" target="_blank" class="doc-link">🔏 Police Clearance</a>
+                    }
+                </div>
+            </div>
+
+            <!-- Agreement Confirmation -->
+            <div class="agree-list">
+                <strong>Agreements signed by nurse:</strong>
+                <ul style="margin:8px 0 0;padding-left:20px;">
+                    <li>Caretaker Service Agreement: <strong style="color:@(nurse.AgreedToNurseAgreement?"#28a745":"#dc3545")">@(nurse.AgreedToNurseAgreement ? "✅ Accepted" : "❌ Not Accepted")</strong></li>
+                    <li>Non-Disclosure Agreement (NDA): <strong style="color:@(nurse.AgreedToNDA?"#28a745":"#dc3545")">@(nurse.AgreedToNDA ? "✅ Accepted" : "❌ Not Accepted")</strong></li>
+                    <li>Background Check Consent: <strong style="color:@(nurse.AgreedToBackgroundCheck?"#28a745":"#dc3545")">@(nurse.AgreedToBackgroundCheck ? "✅ Accepted" : "❌ Not Accepted")</strong></li>
+                </ul>
+            </div>
+
+            <!-- Approve / Reject Buttons -->
+            <div style="display:flex;gap:12px;align-items:center;">
+                <form asp-action="ApproveNurse" asp-controller="AdminBoard" method="post">
+                    <input type="hidden" name="id" value="@nurse.ID">
+                    <button type="submit" class="btn-approve">✅ Approve Nurse</button>
+                </form>
+                <button class="btn-reject" onclick="toggleReject(@nurse.ID)">❌ Reject with Reason</button>
+            </div>
+
+            <div class="reject-form" id="reject-@nurse.ID">
+                <form asp-action="RejectNurse" asp-controller="AdminBoard" method="post">
+                    <input type="hidden" name="id" value="@nurse.ID">
+                    <label style="font-weight:600;color:#dc3545;">Rejection Reason (nurse will see this):</label>
+                    <textarea name="reason" class="form-control mt-2 mb-3" rows="2"
+                        placeholder="e.g. Police clearance certificate is unclear, please re-upload" required></textarea>
+                    <button type="submit" class="btn-reject">Submit Rejection</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function toggleReject(id) {
+        const el = document.getElementById('reject-' + id);
+        el.classList.toggle('show');
+    }
+</script>

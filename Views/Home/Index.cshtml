@@ -1,343 +1,605 @@
-﻿ @{
-    ViewData["Title"] = "Home Page";
-}
-@{
+﻿@{
     ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    :root {
+        --ec-primary: #36625a;
+        --ec-accent: #f8b84c;
+        --ec-light: #f5f0e3;
+    }
 
+    .hero-section {
+        background: linear-gradient(135deg, #36625a 0%, #4a8a7e 60%, #5aa396 100%);
+        padding: 80px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
 
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.04);
+        top: -100px;
+        right: -100px;
+    }
 
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: rgba(248,184,76,0.08);
+        bottom: -60px;
+        left: 10%;
+    }
 
+    .hero-tag {
+        display: inline-block;
+        background: rgba(248,184,76,0.2);
+        color: var(--ec-accent);
+        border: 1px solid rgba(248,184,76,0.35);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
 
-@* <div class="hero-section bg-secondary text-white text-center py-5">
-    <h1 class="display-4">Welcome to CareTaker Services</h1>
-    <p class="lead">Find the best babysitters and elder care providers near you.<p>
-   
-        <a href="/Account/Register" class="btn btn-primary">Sign Up</a>
-        <a href="/Account/Login" class="btn btn-success">Login</a>
-</div>
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1.15;
+        margin-bottom: 20px;
+    }
 
-<div class="container my-5">
-    <h2 class="text-center mb-4">Featured Services</h2>
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product 1">
-                <div class="card-body">
-                    <h5 class="card-title">Babysitting</h5>
-                    
-                    <p>Find trusted babysitters for your kids.</p>
-                    <a href="#" class="btn btn-primary">Buy service</a>
-                    
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product 2">
-                <div class="card-body">
-                    <h5 class="card-title">Elder Care</h5>
-                    <p>Professional care for your loved ones.</p>
-                    <a href="#" class="btn btn-primary">Buy service</a>
-                    
-                </div>
-            </div>
-        </div>
-        
-    </div>
-</div>
- *@
+    .hero-title span {
+        color: var(--ec-accent);
+    }
 
+    .hero-desc {
+        font-size: 1.05rem;
+        color: rgba(255,255,255,0.82);
+        line-height: 1.75;
+        max-width: 520px;
+        margin-bottom: 36px;
+    }
 
+    .btn-hero-primary {
+        background: var(--ec-accent);
+        color: #1e3a35;
+        font-weight: 700;
+        padding: 14px 32px;
+        border-radius: 10px;
+        border: none;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.25s;
+    }
 
-@*  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caretaker Services</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
+    .btn-hero-primary:hover {
+        background: #e8a73c;
+        color: #1e3a35;
+        transform: translateY(-2px);
+    }
 
-        body {
-            background-color: #f5f7fa;
-        }
+    .btn-hero-outline {
+        background: transparent;
+        color: white;
+        font-weight: 600;
+        padding: 14px 28px;
+        border-radius: 10px;
+        border: 2px solid rgba(255,255,255,0.4);
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.25s;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .btn-hero-outline:hover {
+        border-color: white;
+        background: rgba(255,255,255,0.08);
+        color: white;
+    }
 
-        .hero {
-            /* background: #2c3e50; */
-            background-image: url('img.jpg'); /* Replace with your image path */
-            background-size: cover; /* Ensures the image covers the entire section */
-            background-position: center;
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
-            margin-bottom: 40px;
-        }
+    .hero-image-box {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    }
 
-        .hero h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
+    .hero-image-box img {
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+        display: block;
+    }
 
-        .hero p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
+    .hero-badge {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
 
-        .cta-button {
-            display: inline-block;
-            padding: 15px 30px;
-            background-color: #ffffff;
-            color: #4a90e2;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
+    .hero-badge-icon {
+        width: 42px;
+        height: 42px;
+        background: #e8f5f2;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-        }
+    .hero-badge-text strong {
+        display: block;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #36625a;
+        line-height: 1;
+    }
 
-        .cards-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            padding: 20px;
-        }
+    .hero-badge-text span {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 2px;
+        display: block;
+    }
 
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 350px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
+    /* Stats Bar */
+    .stats-bar {
+        background: white;
+        border-bottom: 1px solid #e8e0d0;
+        padding: 22px 0;
+    }
 
-        .card:hover {
-            transform: translateY(-10px);
-        }
+    .stat-item {
+        text-align: center;
+        padding: 0 16px;
+        border-right: 1px solid #e8e0d0;
+    }
 
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            background-color: #4a90e2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+    .stat-item:last-child { border-right: none; }
 
-        .card-icon img {
-            width: 30px;
-            height: 30px;
-        }
+    .stat-number {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: var(--ec-primary);
+        line-height: 1;
+    }
 
-        .card h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
+    .stat-label {
+        font-size: 0.78rem;
+        color: #888;
+        margin-top: 4px;
+        font-weight: 500;
+    }
 
-        .card p {
-            color: #666;
-            line-height: 1.6;
-        }
+    /* Steps */
+    .steps-section {
+        background: var(--ec-light);
+        padding: 70px 0;
+    }
 
-        .card .learn-more {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4a90e2;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    .section-eyebrow {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--ec-primary);
+        margin-bottom: 8px;
+    }
 
-        .contact-section {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #2c3e50;
-            color: white;
-            margin-top: 40px;
-        }
+    .section-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e3a35;
+        margin-bottom: 10px;
+    }
 
-        .contact-section h2 {
-            margin-bottom: 20px;
-        }
+    .section-sub {
+        color: #777;
+        font-size: 0.95rem;
+        margin-bottom: 48px;
+    }
 
-        .contact-section .phone {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
+    .step-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        border: 1px solid #e8e0d0;
+        height: 100%;
+        position: relative;
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
 
-        media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2em;
-            }
+    .step-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(54,98,90,0.1);
+    }
 
-            .card {
-                width: 100%;
-                max-width: 350px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="hero">
-        <div class="container">
-            <h1>Professional Care Services</h1>
-            <p>Providing compassionate and reliable care for your loved ones</p>
-            <a href="#contact" class="cta-button">Get Started Today</a>
-        </div>
-    </div>
+    .step-number {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--ec-accent);
+        color: #1e3a35;
+        font-weight: 800;
+        font-size: 0.75rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
 
+    .step-icon {
+        width: 64px;
+        height: 64px;
+        background: #e8f5f2;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .step-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e3a35;
+        margin-bottom: 10px;
+    }
+
+    .step-desc {
+        font-size: 0.88rem;
+        color: #777;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Services */
+    .services-section {
+        padding: 70px 0;
+        background: white;
+    }
+
+    .service-chip {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f5f0e3;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #e8e0d0;
+        transition: all 0.2s;
+    }
+
+    .service-chip:hover {
+        background: #e8f5f2;
+        border-color: #b5d4cc;
+    }
+
+    .service-chip-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .service-chip-name {
+        font-weight: 600;
+        color: #1e3a35;
+        font-size: 0.92rem;
+    }
+
+    /* Why Choose Us */
+    .why-section {
+        background: var(--ec-light);
+        padding: 70px 0;
+    }
+
+    .why-card {
+        display: flex;
+        gap: 18px;
+        background: white;
+        border-radius: 14px;
+        padding: 28px 24px;
+        border: 1px solid #e8e0d0;
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+    .why-card:hover { transform: translateY(-4px); }
+
+    .why-icon {
+        font-size: 1.8rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .why-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e3a35;
+        margin-bottom: 6px;
+    }
+
+    .why-desc {
+        font-size: 0.87rem;
+        color: #777;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* CTA */
+    .cta-section {
+        background: linear-gradient(135deg, #1e3a35, #36625a);
+        padding: 70px 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .cta-section p {
+        opacity: 0.85;
+        font-size: 1rem;
+        margin-bottom: 36px;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<!-- ══ HERO ══ -->
+<section class="hero-section">
     <div class="container">
-        <div class="cards-container">
-            <div class="card">
-                <div class="card-icon">
-                    <img src="/api/placeholder/30/30" alt="Personal Care Icon">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" style="position:relative;z-index:1;">
+                <div class="hero-tag">Trusted Home Care</div>
+                <h1 class="hero-title">
+                    Compassionate Care<br>for Your <span>Loved Ones</span>
+                </h1>
+                <p class="hero-desc">
+                    We connect families with verified, professional caretakers — bringing dignity,
+                    comfort, and expert support directly to your home.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a asp-controller="Caretaker" asp-action="CaretakerData" class="btn-hero-primary">
+                        📋 Book a Caretaker
+                    </a>
+                    <a asp-controller="Home" asp-action="AboutUs" class="btn-hero-outline">
+                        Learn More
+                    </a>
                 </div>
-                <h2>Personal Care</h2>
-                <p>Our experienced caregivers provide comprehensive personal care services, including assistance with daily activities, hygiene, and mobility support.</p>
-                <a href="#learn-more" class="learn-more">Learn More →</a>
             </div>
-
-            <div class="card">
-                <div class="card-icon">
-                    <img src="/api/placeholder/30/30" alt="Medical Care Icon">
-                </div>
-                <h2>Medical Care</h2>
-                <p>Professional medical care services including medication management, wound care, and coordination with healthcare providers.</p>
-                <a href="#learn-more" class="learn-more">Learn More →</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="contact-section">
-        <div class="container">
-            <h2>Ready to Get Started?</h2>
-            <p>Contact us for a free consultation</p>
-            <div class="phone">1-800-CARE-NOW</div>
-        </div>
-    </div>
-</body>
-</html>
-
- *@
-
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>CareTaker Services</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/Images/care.jpg');
-            background-size: cover;
-            background-position: center;
-            padding: 120px 0;
-            position: relative;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .card {
-            transition: transform 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-            .card:hover {
-                transform: translateY(-5px);
-            }
-
-        .btn-primary {
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-success {
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-left: 15px;
-        }
-
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #0d6efd;
-        }
-    </style>
-</head>
-<body>
-    <div class="hero-section text-white">
-        <div class="hero-content">
-            <div class="container text-center">
-                <h1 class="display-3 mb-4 fw-bold">Welcome to CareTaker Services</h1>
-                <p class="lead mb-5 fw-normal fs-4">Find the best babysitters and elder care providers near you</p>
-                <div class="d-flex justify-content-center">
-                   @*  <a href="/Account/Register" class="btn btn-primary">Sign Up</a>
-                    <a href="/Account/Login" class="btn btn-success">Login</a> *@
+            <div class="col-lg-6" style="position:relative;z-index:1;">
+                <div class="hero-image-box">
+                    <img src="/Images/care.jpg"
+                         onerror="this.src='https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&q=80'"
+                         alt="Caregiver with elderly patient" />
+                    <div class="hero-badge">
+                        <div class="hero-badge-icon">⭐</div>
+                        <div class="hero-badge-text">
+                            <strong>4.9 / 5.0</strong>
+                            <span>2,000+ happy families</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="container my-5">
-        <h2 class="text-center mb-5 fw-bold">Featured Services</h2>
+<!-- ══ STATS BAR ══ -->
+<section class="stats-bar">
+    <div class="container">
+        <div class="row g-0">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Verified Caretakers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">2,000+</div>
+                    <div class="stat-label">Families Served</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">4.9★</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="steps-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="section-eyebrow">How It Works</div>
+            <h2 class="section-title">Get Care in 3 Simple Steps</h2>
+            <p class="section-sub">From browse to booked in minutes</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">STEP 1</div>
+                    <div class="step-icon">🔍</div>
+                    <div class="step-title">Browse Caretakers</div>
+                    <p class="step-desc">Search verified caretakers by specialization, city, and availability. View full profiles and credentials.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">STEP 2</div>
+                    <div class="step-icon">📅</div>
+                    <div class="step-title">Book a Session</div>
+                    <p class="step-desc">Choose your preferred caretaker, select your dates, and confirm the booking instantly.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">STEP 3</div>
+                    <div class="step-icon">💙</div>
+                    <div class="step-title">Receive Expert Care</div>
+                    <p class="step-desc">Your caretaker arrives on time and provides compassionate, professional support at home.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section class="services-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="section-eyebrow">Our Services</div>
+            <h2 class="section-title">Tailored Care for Every Need</h2>
+            <p class="section-sub">Professional support across all aspects of elder care</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">💊</div>
+                    <div class="service-chip-name">Medication Management</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">🧘</div>
+                    <div class="service-chip-name">Physiotherapy Support</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">🍽️</div>
+                    <div class="service-chip-name">Meal Preparation</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">🚿</div>
+                    <div class="service-chip-name">Personal Hygiene Care</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">🧠</div>
+                    <div class="service-chip-name">Dementia Support</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="service-chip">
+                    <div class="service-chip-icon">🚗</div>
+                    <div class="service-chip-name">Mobility Assistance</div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Home" asp-action="ElderCareService"
+               style="color:var(--ec-primary);font-weight:700;text-decoration:none;font-size:0.95rem;">
+                View All Services →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ══ WHY CHOOSE US ══ -->
+<section class="why-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="section-eyebrow">Why Elder Care</div>
+            <h2 class="section-title">Built on Trust & Compassion</h2>
+            <p class="section-sub">Every decision we make starts with your family's wellbeing</p>
+        </div>
         <div class="row g-4">
             <div class="col-md-6">
-                <div class="card h-100">
-                    <img src="/Images/baby.jpg" class="card-img-top" alt="Babysitting Services">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">👶</div>
-                        <h3 class="card-title mb-3">Babysitting</h3>
-                        <p class="card-text mb-4">Find trusted and experienced babysitters for your children. All our sitters are thoroughly vetted and trained to provide the best care.</p>
-                        <a href="/Home/BabyCareService" class="btn btn-primary">Learn More</a>
+                <div class="why-card">
+                    <div class="why-icon">✅</div>
+                    <div>
+                        <div class="why-title">Verified Caretakers Only</div>
+                        <p class="why-desc">Every caretaker on our platform is background-checked, document-verified, and approved by our admin team before going live.</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card h-100">
-                    <img src="/Images/elder.jpg" class="card-img-top" alt="Elder Care Services">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">👵</div>
-                        <h3 class="card-title mb-3">Elder Care</h3>
-                        <p class="card-text mb-4">Professional and compassionate care for your elderly loved ones. Our caregivers are specialized in providing personalized assistance.</p>
-                        <a href="/Home/ElderCareService" class="btn btn-primary">Learn More</a>
+                <div class="why-card">
+                    <div class="why-icon">🔒</div>
+                    <div>
+                        <div class="why-title">Safe & Private</div>
+                        <p class="why-desc">Your family's data is protected at every step. We never share personal information without explicit consent.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="why-card">
+                    <div class="why-icon">🌟</div>
+                    <div>
+                        <div class="why-title">Consistent Quality</div>
+                        <p class="why-desc">We maintain high standards through regular reviews, caretaker training, and real family feedback.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="why-card">
+                    <div class="why-icon">💬</div>
+                    <div>
+                        <div class="why-title">Full Transparency</div>
+                        <p class="why-desc">Track your booking status, read caretaker profiles in full, and receive receipts for every confirmed booking.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-   
+<!-- ══ CTA ══ -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of families who trust Elder Care with their loved ones.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Home" asp-action="Register"
+               style="background:var(--ec-accent);color:#1e3a35;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:0.95rem;">
+                Register as Customer
+            </a>
+            <a asp-controller="Caretaker" asp-action="CaretakerRegister"
+               style="border:2px solid rgba(255,255,255,0.5);color:white;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:0.95rem;">
+                Join as Caretaker
+            </a>
+        </div>
+    </div>
+</section>

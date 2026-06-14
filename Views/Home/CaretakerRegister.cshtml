@@ -1,0 +1,75 @@
+<style>
+    :root { --primary: #36625a; --accent: #f8b84c; --bg: #f5f0e3; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .reg-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 15px; }
+    .reg-card { background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 45px 40px; width: 100%; max-width: 500px; }
+    .form-label { color: var(--primary); font-weight: 600; font-size: 0.88rem; }
+    .form-control { border: 1px solid rgba(54,98,90,0.25); border-radius: 8px; padding: 11px 14px; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 0.2rem rgba(54,98,90,0.15); }
+    .btn-reg { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 13px; font-weight: 700; width: 100%; font-size: 1rem; margin-top: 10px; }
+    .steps-box { background: #f0f7f5; border-left: 4px solid var(--accent); border-radius: 8px; padding: 15px 20px; margin-bottom: 25px; font-size: 0.88rem; color: #444; }
+    .steps-box ol { margin: 8px 0 0; padding-left: 18px; }
+    .steps-box li { padding: 4px 0; }
+    .alert-danger { background: #f8d7da; color: #721c24; border-radius: 8px; padding: 12px; margin-bottom: 20px; }
+</style>
+
+<div class="reg-wrapper">
+    <div class="reg-card">
+
+        <div class="text-center mb-3">
+            <span style="background:var(--accent);color:white;padding:5px 18px;border-radius:20px;font-size:0.8rem;font-weight:700;">Nurse / Caretaker Registration</span>
+        </div>
+        <h2 style="color:var(--primary);font-weight:700;text-align:center;margin-bottom:5px;">Join as a Nurse</h2>
+        <p style="color:#888;text-align:center;font-size:0.9rem;margin-bottom:25px;">Create your login account first</p>
+
+        <div class="steps-box">
+            <strong>Registration has 2 steps:</strong>
+            <ol>
+                <li><strong>Step 1 (this page)</strong> — Create your login account</li>
+                <li><strong>Step 2 (next page)</strong> — Fill your full nurse profile and upload documents</li>
+            </ol>
+            Your profile goes live only after admin verifies your documents.
+        </div>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-danger">❌ @TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" asp-action="CaretakerRegister" asp-controller="Home">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name *</label>
+                    <input type="text" name="FirstName" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name *</label>
+                    <input type="text" name="LastName" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email Address *</label>
+                <input type="email" name="Email" class="form-control"
+                    placeholder="Use same email in nurse profile form" required>
+                <small class="text-muted">⚠️ Use this same email when filling your nurse profile in Step 2</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password *</label>
+                <input type="password" name="Password" class="form-control"
+                    placeholder="Minimum 8 characters" required minlength="8">
+            </div>
+
+            <button type="submit" class="btn-reg">
+                Continue to Step 2 — Fill Nurse Profile →
+            </button>
+
+            <p class="text-center text-muted mt-3" style="font-size:0.85rem;">
+                Already registered?
+                <a href="/Home/Login" style="color:var(--primary);font-weight:600;">Login here</a>
+            </p>
+        </form>
+    </div>
+</div>

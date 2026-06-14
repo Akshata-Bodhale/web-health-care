@@ -1,0 +1,152 @@
+@model CareProjct.web.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="background:#f1f5f9; min-height:100vh; padding:36px 0;">
+<div class="container-fluid px-4">
+
+    <!-- Page Header -->
+    <div style="margin-bottom:28px;">
+        <h2 style="font-weight:800; color:#1a3c5e; margin:0 0 4px;">🛡️ Admin Dashboard</h2>
+        <p style="color:#64748b; margin:0;">Platform overview and management</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        @{
+            var cards = new[] {
+                new { Label="Total Nurses",     Value=Model.TotalNurses.ToString(),           Icon="👩‍⚕️", Bg="#dbeafe", Accent="#1d4ed8" },
+                new { Label="Pending Approvals",Value=Model.PendingVerifications.ToString(),  Icon="⏳",   Bg="#fef3c7", Accent="#92400e" },
+                new { Label="Total Bookings",   Value=Model.TotalBookings.ToString(),         Icon="📅",   Bg="#dcfce7", Accent="#166534" },
+                new { Label="Active Bookings",  Value=Model.ActiveBookings.ToString(),        Icon="🔴",   Bg="#fee2e2", Accent="#991b1b" }
+            };
+        }
+        @foreach (var c in cards)
+        {
+            <div class="col-md-3 col-6">
+                <div style="background:#fff; border-radius:14px; padding:24px; border:1px solid #e2e8f0;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                        <span style="font-size:1.6rem;">@c.Icon</span>
+                        <span style="background:@c.Bg; color:@c.Accent; font-size:.75rem; font-weight:700; padding:4px 10px; border-radius:20px;">LIVE</span>
+                    </div>
+                    <div style="font-size:2rem; font-weight:800; color:@c.Accent; line-height:1;">@c.Value</div>
+                    <div style="color:#64748b; font-size:.85rem; margin-top:6px;">@c.Label</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Pending Verifications -->
+        <div class="col-md-5">
+            <div style="background:#fff; border-radius:14px; padding:28px; border:1px solid #e2e8f0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h5 style="font-weight:700; color:#1a3c5e; margin:0;">⏳ Pending Verifications</h5>
+                    <a asp-controller="AdminBoard" asp-action="VerificationQueue"
+                       style="color:#2d7dd2; font-size:.85rem; text-decoration:none; font-weight:600;">View All →</a>
+                </div>
+
+                @if (!Model.PendingNurses.Any())
+                {
+                    <div style="text-align:center; padding:32px; color:#94a3b8;">
+                        <div style="font-size:2.4rem; margin-bottom:12px;">✅</div>
+                        <p style="margin:0; font-size:.95rem;">No pending verifications</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var nurse in Model.PendingNurses.Take(5))
+                    {
+                        <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f1f5f9;">
+                            <div style="width:40px; height:40px; background:#dbeafe; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">👩‍⚕️</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:600; color:#1e293b; font-size:.9rem;">@nurse.Name</div>
+                                <div style="color:#64748b; font-size:.8rem;">@nurse.Specialization</div>
+                            </div>
+                            <a asp-controller="AdminBoard" asp-action="ApproveNurse" asp-route-id="@nurse.NurseId"
+                               style="background:#dcfce7; color:#166534; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:.8rem; font-weight:600;">
+                                Approve
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="col-md-7">
+            <div style="background:#fff; border-radius:14px; padding:28px; border:1px solid #e2e8f0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h5 style="font-weight:700; color:#1a3c5e; margin:0;">📋 Recent Bookings</h5>
+                    <a asp-controller="AdminBoard" asp-action="AllBookings"
+                       style="color:#2d7dd2; font-size:.85rem; text-decoration:none; font-weight:600;">View All →</a>
+                </div>
+
+                @if (!Model.RecentBookings.Any())
+                {
+                    <div style="text-align:center; padding:32px; color:#94a3b8;">
+                        <div style="font-size:2.4rem; margin-bottom:12px;">📅</div>
+                        <p style="margin:0;">No bookings yet</p>
+                    </div>
+                }
+                else
+                {
+                    <div style="overflow-x:auto;">
+                        <table class="table table-sm" style="margin:0;">
+                            <thead>
+                                <tr>
+                                    <th style="color:#64748b; font-size:.78rem; text-transform:uppercase;">Customer</th>
+                                    <th style="color:#64748b; font-size:.78rem; text-transform:uppercase;">Nurse</th>
+                                    <th style="color:#64748b; font-size:.78rem; text-transform:uppercase;">Date</th>
+                                    <th style="color:#64748b; font-size:.78rem; text-transform:uppercase;">Amount</th>
+                                    <th style="color:#64748b; font-size:.78rem; text-transform:uppercase;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.RecentBookings)
+                                {
+                                    <tr>
+                                        <td style="font-size:.88rem;">@b.CustomerName</td>
+                                        <td style="font-size:.88rem;">@b.NurseName</td>
+                                        <td style="font-size:.88rem; color:#64748b;">@b.BookingDate.ToString("dd MMM")</td>
+                                        <td style="font-size:.88rem; font-weight:600;">₹@b.Amount</td>
+                                        <td>
+                                            <span style="background:@(b.Status=="Confirmed"?"#dcfce7":"#fef3c7"); color:@(b.Status=="Confirmed"?"#166534":"#92400e"); padding:3px 10px; border-radius:20px; font-size:.78rem; font-weight:600;">
+                                                @b.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="background:#fff; border-radius:14px; padding:28px; border:1px solid #e2e8f0; margin-top:24px;">
+        <h5 style="font-weight:700; color:#1a3c5e; margin-bottom:20px;">⚡ Quick Actions</h5>
+        <div class="d-flex gap-3 flex-wrap">
+            <a asp-controller="AdminBoard" asp-action="VerificationQueue"
+               style="background:#dbeafe; color:#1d4ed8; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:600; font-size:.9rem;">
+                📋 Verification Queue
+            </a>
+            <a asp-controller="AdminBoard" asp-action="AllBookings"
+               style="background:#dcfce7; color:#166534; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:600; font-size:.9rem;">
+                📅 All Bookings
+            </a>
+            <a asp-controller="Caretaker" asp-action="CaretakerData"
+               style="background:#ede9fe; color:#5b21b6; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:600; font-size:.9rem;">
+                👩‍⚕️ Browse Nurses
+            </a>
+        </div>
+    </div>
+
+</div>
+</div>
