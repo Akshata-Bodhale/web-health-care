@@ -156,7 +156,6 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("ProductList");
         }
 
-        public IActionResult Dashboard() { return View(); }
-
+       
     }  
 }       

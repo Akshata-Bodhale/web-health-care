@@ -90,20 +90,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FyZXRha2VyL1JlZ2lzdHJhdGlvblBlbmRpbmcuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/workspaces/web-health-care/Views/Customer/Customer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3VzdG9tZXIvQ3VzdG9tZXIuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/workspaces/web-health-care/Views/Customer/CustomerMembership.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3VzdG9tZXIvQ3VzdG9tZXJNZW1iZXJzaGlwLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [/workspaces/web-health-care/Views/Home/AboutUs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9BYm91dFVzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/workspaces/web-health-care/Views/Home/BabyCareService.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9CYWJ5Q2FyZVNlcnZpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/workspaces/web-health-care/Views/Home/CaretakerRegister.cshtml]

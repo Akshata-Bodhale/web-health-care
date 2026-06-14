@@ -229,6 +229,11 @@
                         <i class="fas fa-info-circle me-1"></i> About Us
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="DisplayFeedbacks">
+                        <i class="fas fa-quote-left me-1"></i> Testimonials
+                    </a>
+                </li>
 
                 @* Browse Nurses — only for logged in customers *@
                 @if (Context.Session.GetString("UserType") == "Customer")
@@ -309,6 +314,15 @@
                                        style="color:var(--primary);"></i>
                                     My Bookings
                                 </a>
+                                <li>
+                                    <a class="dropdown-item"
+                                    asp-controller="Home"
+                                    asp-action="Feedback">
+                                        <i class="fas fa-star me-2"
+                                        style="color:var(--primary);"></i>
+                                        Give Feedback
+                                    </a>
+                                </li>
                             </li>
                             <li>
                             <li>
@@ -528,6 +542,8 @@
                 <a class="footer-link" asp-controller="Home" asp-action="CaretakerRegister">Join as Nurse</a>
                 <a class="footer-link" asp-controller="Caretaker" asp-action="CaretakerData">Browse Nurses</a>
                 <a class="footer-link" asp-controller="Home" asp-action="Login">Login</a>
+                <a class="footer-link" asp-controller="Home" asp-action="DisplayFeedbacks">Testimonials</a>
+                <a class="footer-link" asp-controller="Home" asp-action="Feedback">Give Feedback</a>
             </div>
 
             <!-- Contact -->

@@ -30,10 +30,7 @@ namespace CareProjct.web.Controllers
         // ────────────────────────────────────
         //  CUSTOMER REGISTRATION
         // ────────────────────────────────────
-        public IActionResult About()
-        {
-            return View();
-        }
+        
         public IActionResult Register() { return View(); }
 
         [HttpPost]
@@ -83,6 +80,12 @@ namespace CareProjct.web.Controllers
             _Context.Register.Add(model);
             _Context.SaveChanges();
 
+                        // ── Set session so nurse is "logged in" immediately ──
+            HttpContext.Session.SetString("userId",   model.ID.ToString());
+            HttpContext.Session.SetString("UserName", model.FirstName + " " + model.LastName);
+            HttpContext.Session.SetString("UserType", "Caretaker");
+            HttpContext.Session.SetString("UserEmail", model.Email);
+            
             TempData["SuccessMessage"] =
                 "Account created! Please complete your nurse profile.";
 

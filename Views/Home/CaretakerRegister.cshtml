@@ -1,3 +1,8 @@
+@model CareProjct.web.Models.Register
+@{
+    ViewData["Title"] = "Join as Nurse";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 <style>
     :root { --primary: #36625a; --accent: #f8b84c; --bg: #f5f0e3; }
     body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
@@ -41,17 +46,17 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">First Name *</label>
-                    <input type="text" name="FirstName" class="form-control" required>
+                    <input type="text" name="FirstName" class="form-control" value="@Model?.FirstName" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Last Name *</label>
-                    <input type="text" name="LastName" class="form-control" required>
+                    <input type="text" name="LastName" class="form-control"  value="@Model?.LastName" required>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Email Address *</label>
-                <input type="email" name="Email" class="form-control"
+                <input type="email" name="Email" class="form-control" value="@Model?.Email"
                     placeholder="Use same email in nurse profile form" required>
                 <small class="text-muted">⚠️ Use this same email when filling your nurse profile in Step 2</small>
             </div>
