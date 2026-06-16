@@ -60,16 +60,16 @@ namespace CareProjct.web.Controllers
                         Status       = b.BookingStatus ?? b.OrderStatus ?? "Pending",
                         Amount       = b.TotalAmount
                     }).ToList(),
-                PendingNurses = _context.Caretaker
-                    .Where(n => n.VerificationStatus == "Pending")
-                    .Select((n) => new PendingNurseItem
-                    {
-                        NurseId        = n.ID,
-                        Name           = n.FullName,
-                        Specialization = n.Qualification ?? "General",
-                        AppliedDate    = n.RegistrationDate
-                    }).ToList()
-            };
+                    PendingNurses = _context.Caretaker
+                .Where(n => n.VerificationStatus == "Pending")
+                .Select(n => new PendingNurseItem
+                {
+                    NurseId = n.ID,
+                    Name = n.FullName,
+                    Specialization = n.Qualification ?? "General",
+                    AppliedDate = n.RegistrationDate
+                }).ToList()
+        };
             return View(model);
         }
 

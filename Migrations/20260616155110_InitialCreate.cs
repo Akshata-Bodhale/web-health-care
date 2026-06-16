@@ -21,38 +21,38 @@ namespace CareProjct.web.Migrations
                     Address = table.Column<string>(type: "TEXT", nullable: false),
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
                     Gender = table.Column<string>(type: "TEXT", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ContactNumber = table.Column<string>(type: "TEXT", nullable: false),
                     Qualification = table.Column<string>(type: "TEXT", nullable: false),
                     Experience = table.Column<string>(type: "TEXT", nullable: false),
-                    ContactNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CardholderName = table.Column<string>(type: "TEXT", nullable: false),
-                    CardNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    ExpirationDate = table.Column<string>(type: "TEXT", nullable: false),
-                    CVV = table.Column<string>(type: "TEXT", nullable: false),
+                    LicenseNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    LicenseDocumentPath = table.Column<string>(type: "TEXT", nullable: false),
+                    AadhaarPath = table.Column<string>(type: "TEXT", nullable: false),
+                    PoliceClearancePath = table.Column<string>(type: "TEXT", nullable: false),
+                    VerificationStatus = table.Column<string>(type: "TEXT", nullable: false),
+                    RejectionReason = table.Column<string>(type: "TEXT", nullable: false),
+                    VerifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RegistrationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    AgreedToNurseAgreement = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AgreedToNDA = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AgreedToBackgroundCheck = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AgreementSignedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Available = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Category = table.Column<string>(type: "TEXT", nullable: false)
+                    AccountHolderName = table.Column<string>(type: "TEXT", nullable: false),
+                    BankAccountNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    IFSCCode = table.Column<string>(type: "TEXT", nullable: false),
+                    BankName = table.Column<string>(type: "TEXT", nullable: false),
+                    MaxRenewalsAllowed = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentRenewalCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Caretaker", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FullName = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
-                    City = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,23 +78,42 @@ namespace CareProjct.web.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     OrderId = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "TEXT", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     OrderStatus = table.Column<string>(type: "TEXT", nullable: false),
                     ProductDetails = table.Column<string>(type: "TEXT", nullable: false),
-                    FullName = table.Column<string>(type: "TEXT", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: false),
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     ZipCode = table.Column<string>(type: "TEXT", nullable: false),
                     Country = table.Column<string>(type: "TEXT", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
                     Method = table.Column<string>(type: "TEXT", nullable: false),
                     Cost = table.Column<decimal>(type: "TEXT", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "TEXT", nullable: false),
                     CardHolderName = table.Column<string>(type: "TEXT", nullable: false),
                     CardLastFourDigits = table.Column<string>(type: "TEXT", nullable: false),
+                    PatientName = table.Column<string>(type: "TEXT", nullable: false),
+                    PatientAge = table.Column<int>(type: "INTEGER", nullable: false),
+                    PatientCondition = table.Column<string>(type: "TEXT", nullable: false),
+                    PatientNotes = table.Column<string>(type: "TEXT", nullable: false),
+                    ServiceAddress = table.Column<string>(type: "TEXT", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    NumberOfDays = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShiftType = table.Column<string>(type: "TEXT", nullable: false),
+                    BookingStatus = table.Column<string>(type: "TEXT", nullable: false),
+                    NurseRejectionReason = table.Column<string>(type: "TEXT", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "TEXT", nullable: false),
                     PaymentStatus = table.Column<string>(type: "TEXT", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    PaymentDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsRenewal = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PreviousBookingId = table.Column<int>(type: "INTEGER", nullable: true),
+                    RenewalCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    RenewalReminderSent = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AcceptedBookingTerms = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TermsAcceptedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FullName = table.Column<string>(type: "TEXT", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    EmergencyContactName = table.Column<string>(type: "TEXT", nullable: false),
+                    EmergencyContactPhone = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,9 +161,13 @@ namespace CareProjct.web.Migrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false)
+                    Type = table.Column<string>(type: "TEXT", nullable: false),
+                    AgreedToTerms = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AgreedToPrivacy = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AgreementAcceptedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -185,9 +208,6 @@ namespace CareProjct.web.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Caretaker");
-
-            migrationBuilder.DropTable(
-                name: "Customer");
 
             migrationBuilder.DropTable(
                 name: "FeedbackViewModel");

@@ -23,7 +23,6 @@ namespace CareProjct.web.Controllers
         // ── Registration Form (GET) ──
         public IActionResult Caretaker()
         {
-            // If profile already submitted, don't show form again
             var email = HttpContext.Session.GetString("UserEmail") 
                      ?? HttpContext.Session.GetString("Email");
 
@@ -34,17 +33,15 @@ namespace CareProjct.web.Controllers
 
                 if (existing != null)
                 {
-                    // Profile already exists — go to pending or dashboard
                     if (existing.VerificationStatus == "Approved")
                         return RedirectToAction("MyDashboard");
                     else
                         return RedirectToAction("RegistrationPending");
                 }
 
-                // Pre-fill email from session
                 var model = new Caretaker
                 {
-                    Email    = email,
+                    Email = email,
                     FullName = HttpContext.Session.GetString("UserName") ?? ""
                 };
                 return View(model);
@@ -59,61 +56,75 @@ namespace CareProjct.web.Controllers
         {
             try
             {
+                Console.WriteLine($"📝 REGISTRATION START: {product.FullName}, {product.Email}");
+
                 // ── Prevent duplicate profile ──
                 var exists = _Context.Caretaker
                     .Any(c => c.Email == product.Email);
                 if (exists)
                 {
-                    TempData["ErrorMessage"] = 
-                        "A profile with this email already exists. Please login.";
+                    Console.WriteLine("❌ Email already exists");
+                    TempData["ErrorMessage"] = "A profile with this email already exists. Please login.";
                     return RedirectToAction("RegistrationPending");
                 }
 
-                // Save profile image
+                // ── Save profile image ──
                 if (product.ImageFile != null && product.ImageFile.Length > 0)
                     product.ImagePath = await SaveFile(product.ImageFile, "Images");
 
-                // Save nursing license document
+                // ── Save nursing license document ──
                 if (product.LicenseDocumentFile != null && product.LicenseDocumentFile.Length > 0)
                     product.LicenseDocumentPath = await SaveFile(product.LicenseDocumentFile, "Documents");
 
-                // Save Aadhaar scan
+                // ── Save Aadhaar scan ──
                 if (product.AadhaarFile != null && product.AadhaarFile.Length > 0)
                     product.AadhaarPath = await SaveFile(product.AadhaarFile, "Documents");
 
-                // Save police clearance
+                // ── Save police clearance ──
                 if (product.PoliceClearanceFile != null && product.PoliceClearanceFile.Length > 0)
                     product.PoliceClearancePath = await SaveFile(product.PoliceClearanceFile, "Documents");
 
-                // Force category to Eldercare only
+                // ✅ CRITICAL: Set these fields
                 product.Category = "Eldercare";
+                product.VerificationStatus = "Pending";       // ← For admin to see
+                product.RegistrationDate = DateTime.Now;      // ← When they registered
+                product.Available = false;                     // ← Not live yet
 
-                // Status starts as Pending — admin must approve
-                product.VerificationStatus = "Pending";
-                product.Available = false;
-
-                // ✅ THIS IS THE FIX — Records WHEN nurse registered
-                // Without this line, RegistrationDate stays empty (01/01/0001)
-                // Admin dashboard cannot show correct applied date without this
-                product.RegistrationDate = DateTime.Now;
+                Console.WriteLine($"💾 SAVING: Status={product.VerificationStatus}, Date={product.RegistrationDate}, Available={product.Available}");
 
                 _Context.Caretaker.Add(product);
                 await _Context.SaveChangesAsync();
 
-                // ── Set session so nurse stays logged in ──
-                HttpContext.Session.SetString("UserEmail", product.Email);
-                HttpContext.Session.SetString("UserName",  product.FullName);
-                HttpContext.Session.SetString("UserType",  "Caretaker");
-                HttpContext.Session.SetString("userId",    product.ID.ToString());
+                Console.WriteLine($"✅ DATABASE SAVED! ID: {product.ID}");
 
-                TempData["SuccessMessage"] = "Registration submitted! Admin will review and notify you within 48 hours.";
+                // ── Set session ──
+                HttpContext.Session.SetString("UserEmail", product.Email);
+                HttpContext.Session.SetString("UserName", product.FullName);
+                HttpContext.Session.SetString("UserType", "Caretaker");
+                HttpContext.Session.SetString("userId", product.ID.ToString());
+
+                TempData["SuccessMessage"] = "✅ Registration submitted! Admin will review and notify you within 48 hours.";
+                
+                Console.WriteLine("🎉 REDIRECTING TO RegistrationPending");
                 return RedirectToAction("RegistrationPending");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Error: " + ex.Message);
+                Console.WriteLine($"❌ EXCEPTION: {ex.Message}");
+                Console.WriteLine($"📍 Inner: {ex.InnerException?.Message}");
+                Console.WriteLine($"🔗 Stack: {ex.StackTrace}");
+
+                foreach (var state in ModelState.Values)
+                {
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"⚠️ ModelState: {error.ErrorMessage}");
+                    }
+                }
+
+                ModelState.AddModelError("", "Error: " + ex.InnerException?.Message ?? ex.Message);
+                return View(product);
             }
-            return View(product);
         }
 
         // ── Registration Pending Page ──
@@ -123,7 +134,6 @@ namespace CareProjct.web.Controllers
         }
 
         // ── Browse Nurses (Customer View) ──
-        // Only shows APPROVED nurses
         public IActionResult CaretakerData(string city = null)
         {
             var query = _Context.Caretaker
@@ -146,7 +156,7 @@ namespace CareProjct.web.Controllers
             return View(data);
         }
 
-        // ── Single Nurse Profile (Customer View) ──
+        // ── Single Nurse Profile ──
         [UserAuthenication]
         public IActionResult CaretakerProfile(int ID)
         {
@@ -155,11 +165,10 @@ namespace CareProjct.web.Controllers
             return View(user);
         }
 
-        // ── Nurse Dashboard (Nurse's own view) ──
+        // ── Nurse Dashboard ──
         [UserAuthenication]
         public IActionResult MyDashboard()
         {
-            // Try both keys — covers login and registration flows
             var email = HttpContext.Session.GetString("UserEmail") 
                      ?? HttpContext.Session.GetString("Email");
             var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
@@ -190,7 +199,6 @@ namespace CareProjct.web.Controllers
             return View(vm);
         }
 
-        // ── Nurse Accepts Booking ──
         [HttpPost]
         [UserAuthenication]
         public IActionResult AcceptBooking(int bookingId)
@@ -205,7 +213,6 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyDashboard");
         }
 
-        // ── Nurse Rejects Booking ──
         [HttpPost]
         [UserAuthenication]
         public IActionResult RejectBooking(int bookingId, string reason)
@@ -221,7 +228,6 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyDashboard");
         }
 
-        // ── Mark Service Started ──
         [HttpPost]
         [UserAuthenication]
         public IActionResult StartService(int bookingId)
@@ -235,7 +241,6 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyDashboard");
         }
 
-        // ── Mark Service Completed ──
         [HttpPost]
         [UserAuthenication]
         public IActionResult CompleteService(int bookingId)
@@ -250,7 +255,6 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyDashboard");
         }
 
-        // ── Helper: Save uploaded file ──
         private async Task<string> SaveFile(IFormFile file, string folder)
         {
             string uniqueFileName = Guid.NewGuid().ToString()
@@ -268,7 +272,6 @@ namespace CareProjct.web.Controllers
             return "/" + folder.ToLower() + "/" + uniqueFileName;
         }
 
-        // ── Nurse's Own Profile ──
         [UserAuthenication]
         public IActionResult MyProfile()
         {
