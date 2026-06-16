@@ -66,10 +66,15 @@
                                 <div style="font-weight:600; color:#1e293b; font-size:.9rem;">@nurse.Name</div>
                                 <div style="color:#64748b; font-size:.8rem;">@nurse.Specialization</div>
                             </div>
-                            <a asp-controller="AdminBoard" asp-action="ApproveNurse" asp-route-id="@nurse.NurseId"
-                               style="background:#dcfce7; color:#166534; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:.8rem; font-weight:600;">
-                                Approve
-                            </a>
+
+                            {{!-- ✅ FIXED: Changed nurse.Id to nurse.NurseId --}}
+                            <form method="post" action="/AdminBoard/ApproveNurse/@nurse.NurseId">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    Approve
+                                </button>
+                            </form>
+
                         </div>
                     }
                 }
