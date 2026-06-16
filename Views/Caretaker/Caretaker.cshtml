@@ -96,7 +96,13 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Email Address *</label>
-                <input type="email" class="form-control" asp-for="Email" placeholder="Your active email" required>
+                <input type="email" class="form-control" asp-for="Email"
+       placeholder="Your active email" required
+       style="background:#f0f0f0;" readonly>
+       <input type="hidden" asp-for="Email" />
+        <small class="text-muted">
+            ⚠️ This must match your Step 1 registration email
+        </small>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Password *</label>

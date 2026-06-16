@@ -67,7 +67,7 @@ namespace CareProjct.web.Controllers
                         NurseId        = n.ID,
                         Name           = n.FullName,
                         Specialization = n.Qualification ?? "General",
-                        AppliedDate    = DateTime.Now
+                        AppliedDate    = n.RegistrationDate
                     }).ToList()
             };
             return View(model);

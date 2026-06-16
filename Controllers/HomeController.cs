@@ -110,7 +110,7 @@ namespace CareProjct.web.Controllers
                 HttpContext.Session.SetString("UserEmail", AdminEmail);
                 HttpContext.Session.SetString("UserType",  "Admin");
                 HttpContext.Session.SetString("UserName",  "Admin");
-                return RedirectToAction("Index", "AdminBoard");
+                return RedirectToAction("AdminDashboard", "AdminBoard");
             }
 
             // ── 2. Check in Register table ──

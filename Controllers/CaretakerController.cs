@@ -23,7 +23,34 @@ namespace CareProjct.web.Controllers
         // ── Registration Form (GET) ──
         public IActionResult Caretaker()
         {
-            return View();
+            // If profile already submitted, don't show form again
+            var email = HttpContext.Session.GetString("UserEmail") 
+                     ?? HttpContext.Session.GetString("Email");
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                var existing = _Context.Caretaker
+                    .FirstOrDefault(c => c.Email == email);
+
+                if (existing != null)
+                {
+                    // Profile already exists — go to pending or dashboard
+                    if (existing.VerificationStatus == "Approved")
+                        return RedirectToAction("MyDashboard");
+                    else
+                        return RedirectToAction("RegistrationPending");
+                }
+
+                // Pre-fill email from session
+                var model = new Caretaker
+                {
+                    Email    = email,
+                    FullName = HttpContext.Session.GetString("UserName") ?? ""
+                };
+                return View(model);
+            }
+
+            return View(new Caretaker());
         }
 
         // ── Registration Form (POST) ──
@@ -32,6 +59,16 @@ namespace CareProjct.web.Controllers
         {
             try
             {
+                // ── Prevent duplicate profile ──
+                var exists = _Context.Caretaker
+                    .Any(c => c.Email == product.Email);
+                if (exists)
+                {
+                    TempData["ErrorMessage"] = 
+                        "A profile with this email already exists. Please login.";
+                    return RedirectToAction("RegistrationPending");
+                }
+
                 // Save profile image
                 if (product.ImageFile != null && product.ImageFile.Length > 0)
                     product.ImagePath = await SaveFile(product.ImageFile, "Images");
@@ -55,6 +92,11 @@ namespace CareProjct.web.Controllers
                 product.VerificationStatus = "Pending";
                 product.Available = false;
 
+                // ✅ THIS IS THE FIX — Records WHEN nurse registered
+                // Without this line, RegistrationDate stays empty (01/01/0001)
+                // Admin dashboard cannot show correct applied date without this
+                product.RegistrationDate = DateTime.Now;
+
                 _Context.Caretaker.Add(product);
                 await _Context.SaveChangesAsync();
 
@@ -66,7 +108,7 @@ namespace CareProjct.web.Controllers
 
                 TempData["SuccessMessage"] = "Registration submitted! Admin will review and notify you within 48 hours.";
                 return RedirectToAction("RegistrationPending");
-                            }
+            }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error: " + ex.Message);
@@ -119,7 +161,7 @@ namespace CareProjct.web.Controllers
         {
             // Try both keys — covers login and registration flows
             var email = HttpContext.Session.GetString("UserEmail") 
-            ?? HttpContext.Session.GetString("Email");
+                     ?? HttpContext.Session.GetString("Email");
             var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
 
             if (nurse == null) return RedirectToAction("Login", "Home");
@@ -226,12 +268,12 @@ namespace CareProjct.web.Controllers
             return "/" + folder.ToLower() + "/" + uniqueFileName;
         }
 
-                // ── Nurse's Own Profile ──
+        // ── Nurse's Own Profile ──
         [UserAuthenication]
         public IActionResult MyProfile()
         {
             var email = HttpContext.Session.GetString("UserEmail") 
-            ?? HttpContext.Session.GetString("Email");
+                     ?? HttpContext.Session.GetString("Email");
             var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
             if (nurse == null) return RedirectToAction("Login", "Home");
             return View("CaretakerProfile", nurse);

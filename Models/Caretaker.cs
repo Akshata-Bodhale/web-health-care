@@ -49,7 +49,9 @@ namespace CareProjct.web.Models
         public string VerificationStatus { get; set; } = "Pending";
         public string RejectionReason { get; set; }
         public DateTime? VerifiedOn { get; set; }
+         public DateTime RegistrationDate { get; set; }
 
+         
         // ── Agreements (legal proof) ──
         public bool AgreedToNurseAgreement { get; set; } = false;
         public bool AgreedToNDA { get; set; } = false;
