@@ -2,13 +2,6 @@
 using CareProjct.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CareProjct.web.Data;
-using CareProjct.web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace CareProjct.web.Controllers
 {
@@ -31,7 +24,7 @@ namespace CareProjct.web.Controllers
         {
             var viewModel = new ProductViewModel
             {
-                Products = _context.Caretaker.ToList(),
+                Products = _context.Caretaker.OrderByDescending(c => c.RegistrationDate).ToList(),
                 Product = new Caretaker()
             };
             return View(viewModel);
@@ -40,36 +33,53 @@ namespace CareProjct.web.Controllers
         // ── Admin Dashboard ──
         public IActionResult AdminDashboard()
         {
+            Console.WriteLine("\n📊 ========== ADMIN DASHBOARD LOAD ==========");
+            
+            var pendingCount = _context.Caretaker.Count(n => n.VerificationStatus == "Pending");
+            Console.WriteLine($"📊 Pending Nurses Count: {pendingCount}");
+
             var model = new AdminDashboardViewModel
             {
-                TotalNurses          = _context.Caretaker.Count(n => n.VerificationStatus == "Approved"),
-                PendingVerifications = _context.Caretaker.Count(n => n.VerificationStatus == "Pending"),
-                TotalCustomers       = _context.Register.Count(),
-                TotalBookings        = _context.OrderConfirm.Count(),
-                ActiveBookings       = _context.OrderConfirm.Count(b => b.BookingStatus == "Confirmed"),
-                TotalRevenue         = _context.OrderConfirm.Sum(b => (decimal?)b.TotalAmount) ?? 0m,
-                RecentBookings       = _context.OrderConfirm
+                TotalNurses = _context.Caretaker.Count(),
+                PendingVerifications = pendingCount,
+                TotalCustomers = _context.Register.Count(),
+                TotalBookings = _context.OrderConfirm.Count(),
+                ActiveBookings = _context.OrderConfirm.Count(b => b.BookingStatus == "Confirmed"),
+                TotalRevenue = _context.OrderConfirm.Sum(b => (decimal?)b.TotalAmount) ?? 0m,
+                
+                RecentBookings = _context.OrderConfirm
                     .OrderByDescending(b => b.OrderDate)
                     .Take(5)
                     .Select(b => new RecentBookingItem
                     {
-                        BookingId    = b.Id,
+                        BookingId = b.Id,
                         CustomerName = b.FullName ?? "N/A",
-                        NurseName    = b.ProductDetails ?? "N/A",
-                        BookingDate  = b.OrderDate,
-                        Status       = b.BookingStatus ?? b.OrderStatus ?? "Pending",
-                        Amount       = b.TotalAmount
+                        NurseName = b.ProductDetails ?? "N/A",
+                        BookingDate = b.OrderDate,
+                        Status = b.BookingStatus ?? b.OrderStatus ?? "Pending",
+                        Amount = b.TotalAmount
                     }).ToList(),
-                    PendingNurses = _context.Caretaker
-                .Where(n => n.VerificationStatus == "Pending")
-                .Select(n => new PendingNurseItem
-                {
-                    NurseId = n.ID,
-                    Name = n.FullName,
-                    Specialization = n.Qualification ?? "General",
-                    AppliedDate = n.RegistrationDate
-                }).ToList()
-        };
+
+                // ✅ CRITICAL: Add PendingNurses to show in dashboard
+                PendingNurses = _context.Caretaker
+                    .Where(n => n.VerificationStatus == "Pending")
+                    .OrderByDescending(n => n.RegistrationDate)
+                    .Select(n => new PendingNurseItem
+                    {
+                        NurseId = n.ID,
+                        Name = n.FullName,
+                        Specialization = n.Qualification ?? "General",
+                        AppliedDate = n.RegistrationDate
+                    }).ToList()
+            };
+
+            Console.WriteLine($"📊 Pending Nurses in Model: {model.PendingNurses.Count}");
+            foreach (var nurse in model.PendingNurses)
+            {
+                Console.WriteLine($"   - {nurse.Name} ({nurse.NurseId}) - {nurse.AppliedDate}");
+            }
+            Console.WriteLine($"========== DASHBOARD LOADED ==========\n");
+
             return View(model);
         }
 
@@ -79,6 +89,7 @@ namespace CareProjct.web.Controllers
             var pending = _context.Caretaker
                 .Where(c => c.VerificationStatus == "Pending"
                          || c.VerificationStatus == "UnderReview")
+                .OrderByDescending(c => c.RegistrationDate)
                 .ToList();
             return View(pending);
         }
@@ -87,15 +98,30 @@ namespace CareProjct.web.Controllers
         [HttpPost]
         public IActionResult ApproveNurse(int id)
         {
+            Console.WriteLine($"\n✅ ========== APPROVE NURSE ==========");
+            Console.WriteLine($"✅ Nurse ID: {id}");
+
             var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == id);
             if (nurse != null)
             {
                 nurse.VerificationStatus = "Approved";
-                nurse.Available          = true;
-                nurse.VerifiedOn         = DateTime.Now;
+                nurse.Available = true;
+                nurse.VerifiedOn = DateTime.Now;
                 _context.SaveChanges();
+
+                Console.WriteLine($"✅ Nurse: {nurse.FullName}");
+                Console.WriteLine($"✅ Status: {nurse.VerificationStatus}");
+                Console.WriteLine($"✅ Available: {nurse.Available}");
+                Console.WriteLine($"✅ Verified On: {nurse.VerifiedOn}");
+                
                 TempData["SuccessMessage"] = nurse.FullName + " has been approved and is now live.";
             }
+            else
+            {
+                Console.WriteLine($"❌ Nurse not found!");
+            }
+            
+            Console.WriteLine($"========== APPROVE COMPLETE ==========\n");
             return RedirectToAction("VerificationQueue");
         }
 
@@ -107,8 +133,8 @@ namespace CareProjct.web.Controllers
             if (nurse != null)
             {
                 nurse.VerificationStatus = "Rejected";
-                nurse.Available          = false;
-                nurse.RejectionReason    = reason;
+                nurse.Available = false;
+                nurse.RejectionReason = reason;
                 _context.SaveChanges();
                 TempData["InfoMessage"] = nurse.FullName + " has been rejected.";
             }
@@ -131,12 +157,12 @@ namespace CareProjct.web.Controllers
                 .OrderByDescending(b => b.OrderDate)
                 .Select(b => new RecentBookingItem
                 {
-                    BookingId    = b.Id,
+                    BookingId = b.Id,
                     CustomerName = b.FullName ?? "N/A",
-                    NurseName    = b.ProductDetails ?? "N/A",
-                    BookingDate  = b.OrderDate,
-                    Status       = b.BookingStatus ?? b.OrderStatus ?? "Pending",
-                    Amount       = b.TotalAmount
+                    NurseName = b.ProductDetails ?? "N/A",
+                    BookingDate = b.OrderDate,
+                    Status = b.BookingStatus ?? b.OrderStatus ?? "Pending",
+                    Amount = b.TotalAmount
                 }).ToList();
 
             return View(bookings);
@@ -149,13 +175,11 @@ namespace CareProjct.web.Controllers
             var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == id);
             if (nurse != null)
             {
-                nurse.Available          = false;
+                nurse.Available = false;
                 nurse.VerificationStatus = "Pending";
                 _context.SaveChanges();
             }
             return RedirectToAction("ProductList");
         }
-
-       
-    }  
-}       
+    }
+}

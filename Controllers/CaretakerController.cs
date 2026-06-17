@@ -56,46 +56,77 @@ namespace CareProjct.web.Controllers
         {
             try
             {
-                Console.WriteLine($"📝 REGISTRATION START: {product.FullName}, {product.Email}");
+                Console.WriteLine($"\n📝 ========== REGISTRATION START ==========");
+                Console.WriteLine($"📝 Name: {product.FullName}");
+                Console.WriteLine($"📝 Email: {product.Email}");
 
                 // ── Prevent duplicate profile ──
                 var exists = _Context.Caretaker
                     .Any(c => c.Email == product.Email);
                 if (exists)
                 {
-                    Console.WriteLine("❌ Email already exists");
+                    Console.WriteLine("❌ Email already exists!");
                     TempData["ErrorMessage"] = "A profile with this email already exists. Please login.";
-                    return RedirectToAction("RegistrationPending");
+                    return View(product);
                 }
 
                 // ── Save profile image ──
                 if (product.ImageFile != null && product.ImageFile.Length > 0)
+                {
                     product.ImagePath = await SaveFile(product.ImageFile, "Images");
+                    Console.WriteLine($"✅ Image saved: {product.ImagePath}");
+                }
 
                 // ── Save nursing license document ──
                 if (product.LicenseDocumentFile != null && product.LicenseDocumentFile.Length > 0)
+                {
                     product.LicenseDocumentPath = await SaveFile(product.LicenseDocumentFile, "Documents");
+                    Console.WriteLine($"✅ License saved: {product.LicenseDocumentPath}");
+                }
 
                 // ── Save Aadhaar scan ──
                 if (product.AadhaarFile != null && product.AadhaarFile.Length > 0)
+                {
                     product.AadhaarPath = await SaveFile(product.AadhaarFile, "Documents");
+                    Console.WriteLine($"✅ Aadhaar saved: {product.AadhaarPath}");
+                }
 
                 // ── Save police clearance ──
                 if (product.PoliceClearanceFile != null && product.PoliceClearanceFile.Length > 0)
+                {
                     product.PoliceClearancePath = await SaveFile(product.PoliceClearanceFile, "Documents");
+                    Console.WriteLine($"✅ Police clearance saved: {product.PoliceClearancePath}");
+                }
 
-                // ✅ CRITICAL: Set these fields
+                // ✅ CRITICAL: Set these fields BEFORE saving
                 product.Category = "Eldercare";
                 product.VerificationStatus = "Pending";       // ← For admin to see
-                product.RegistrationDate = DateTime.Now;      // ← When they registered
+                product.RegistrationDate = DateTime.Now;      // ← When registered
                 product.Available = false;                     // ← Not live yet
 
-                Console.WriteLine($"💾 SAVING: Status={product.VerificationStatus}, Date={product.RegistrationDate}, Available={product.Available}");
+                Console.WriteLine($"💾 Setting fields:");
+                Console.WriteLine($"   - Category: {product.Category}");
+                Console.WriteLine($"   - VerificationStatus: {product.VerificationStatus}");
+                Console.WriteLine($"   - RegistrationDate: {product.RegistrationDate}");
+                Console.WriteLine($"   - Available: {product.Available}");
 
+                // ── Save to database ──
                 _Context.Caretaker.Add(product);
                 await _Context.SaveChangesAsync();
 
-                Console.WriteLine($"✅ DATABASE SAVED! ID: {product.ID}");
+                Console.WriteLine($"✅ Saved to database!");
+                Console.WriteLine($"✅ Caretaker ID: {product.ID}");
+
+                // ── Verify it was saved ──
+                var saved = _Context.Caretaker.FirstOrDefault(c => c.Email == product.Email);
+                if (saved != null)
+                {
+                    Console.WriteLine($"✅ VERIFIED IN DATABASE:");
+                    Console.WriteLine($"   ID: {saved.ID}");
+                    Console.WriteLine($"   Status: {saved.VerificationStatus}");
+                    Console.WriteLine($"   Date: {saved.RegistrationDate}");
+                    Console.WriteLine($"   Available: {saved.Available}");
+                }
 
                 // ── Set session ──
                 HttpContext.Session.SetString("UserEmail", product.Email);
@@ -103,24 +134,28 @@ namespace CareProjct.web.Controllers
                 HttpContext.Session.SetString("UserType", "Caretaker");
                 HttpContext.Session.SetString("userId", product.ID.ToString());
 
-                TempData["SuccessMessage"] = "✅ Registration submitted! Admin will review and notify you within 48 hours.";
+                TempData["SuccessMessage"] = "✅ Registration submitted! Admin will review within 48 hours.";
                 
-                Console.WriteLine("🎉 REDIRECTING TO RegistrationPending");
+                Console.WriteLine($"🎉 SUCCESS - Redirecting to RegistrationPending");
+                Console.WriteLine($"========== REGISTRATION COMPLETE ==========\n");
+                
                 return RedirectToAction("RegistrationPending");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ EXCEPTION: {ex.Message}");
-                Console.WriteLine($"📍 Inner: {ex.InnerException?.Message}");
-                Console.WriteLine($"🔗 Stack: {ex.StackTrace}");
+                Console.WriteLine($"\n❌ ========== REGISTRATION ERROR ==========");
+                Console.WriteLine($"❌ Exception: {ex.Message}");
+                Console.WriteLine($"❌ Inner Exception: {ex.InnerException?.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
 
                 foreach (var state in ModelState.Values)
                 {
                     foreach (var error in state.Errors)
                     {
-                        Console.WriteLine($"⚠️ ModelState: {error.ErrorMessage}");
+                        Console.WriteLine($"⚠️ Validation Error: {error.ErrorMessage}");
                     }
                 }
+                Console.WriteLine($"========== ERROR COMPLETE ==========\n");
 
                 ModelState.AddModelError("", "Error: " + ex.InnerException?.Message ?? ex.Message);
                 return View(product);
@@ -134,21 +169,27 @@ namespace CareProjct.web.Controllers
         }
 
         // ── Browse Nurses (Customer View) ──
-        public IActionResult CaretakerData(string city = null)
+        public IActionResult CaretakerData(string city = null, string gender = null, decimal? maxPrice = null)
         {
             var query = _Context.Caretaker
-                .Where(p => p.Available == true
-                         && p.VerificationStatus == "Approved"
-                         && p.Category == "Eldercare");
+                .Where(p => p.VerificationStatus == "Approved");
 
             if (!string.IsNullOrEmpty(city))
                 query = query.Where(p => p.City == city);
 
+            if (!string.IsNullOrEmpty(gender))
+                query = query.Where(p => p.Gender == gender);
+
+            if (maxPrice.HasValue && maxPrice > 0)
+                query = query.Where(p => p.Price <= maxPrice.Value);
+
             var data = query.ToList();
 
-            ViewBag.SelectedCity = city;
+            ViewBag.SelectedCity   = city;
+            ViewBag.SelectedGender = gender;
+            ViewBag.SelectedPrice  = maxPrice;
             ViewBag.Cities = _Context.Caretaker
-                .Where(p => p.Available == true && p.VerificationStatus == "Approved")
+                .Where(p => p.VerificationStatus == "Approved")
                 .Select(p => p.City)
                 .Distinct()
                 .ToList();
@@ -269,7 +310,7 @@ namespace CareProjct.web.Controllers
             using (var fileStream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(fileStream);
 
-            return "/" + folder.ToLower() + "/" + uniqueFileName;
+            return "/" + folder + "/" + uniqueFileName;
         }
 
         [UserAuthenication]

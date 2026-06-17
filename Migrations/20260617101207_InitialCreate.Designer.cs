@@ -3,6 +3,7 @@ using System;
 using CareProjct.web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareProjct.web.Migrations
 {
     [DbContext(typeof(Applicationdbcontext))]
-    partial class ApplicationdbcontextModelSnapshot : ModelSnapshot
+    [Migration("20260617101207_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
@@ -198,9 +201,6 @@ namespace CareProjct.web.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("DiscountPercent")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("EmergencyContactName")
                         .HasColumnType("TEXT");
 
@@ -232,9 +232,6 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OrderStatus")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("OriginalAmount")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PatientAge")

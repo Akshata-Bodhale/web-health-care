@@ -126,7 +126,28 @@ namespace CareProjct.web.Controllers
             model.TermsAcceptedOn = DateTime.Now;
             var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == CaretakerId);
             model.ProductDetails  = CaretakerId.ToString();
-            model.TotalAmount     = PricePerDay * model.NumberOfDays;  // FIX 3
+            
+            decimal grossAmount = PricePerDay * model.NumberOfDays;
+
+            if (model.NumberOfDays >= 28)
+            {
+                model.DiscountPercent = 25;   // monthly discount
+            }
+            else if (model.NumberOfDays == 7)
+            {
+                model.DiscountPercent = 10;   // weekly discount
+            }
+            else
+            {
+                model.DiscountPercent = 0;
+            }
+
+            model.TotalAmount = grossAmount - (grossAmount * model.DiscountPercent / 100);
+            model.Address  = model.ServiceAddress ?? "N/A";
+            model.City     = "N/A";
+            model.ZipCode  = "N/A";
+            model.Country  = "India";
+            model.Method   = model.PaymentMethod ?? "Cash";
 
             _context.OrderConfirm.Add(model);
             _context.SaveChanges();

@@ -223,6 +223,14 @@
                 </div>
 
                 <!-- Price Summary -->
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                    <div style="background:#dcfce7;color:#166534;border-radius:8px;padding:8px 14px;font-size:0.82rem;font-weight:700;">
+                        🗓️ Book 7+ days → <strong>10% OFF</strong>
+                    </div>
+                    <div style="background:#dbeafe;color:#1d4ed8;border-radius:8px;padding:8px 14px;font-size:0.82rem;font-weight:700;">
+                        📅 Book 30+ days → <strong>20% OFF</strong>
+                    </div>
+                </div>
                 <div class="price-summary">
                     <strong style="color:var(--primary);display:block;margin-bottom:10px;">Price Summary</strong>
                     <div class="price-row-summary">
@@ -232,6 +240,14 @@
                     <div class="price-row-summary">
                         <span>Number of Days</span>
                         <span id="summaryDays">0 days</span>
+                    </div>
+                    <div class="price-row-summary">
+                        <span>Subtotal</span>
+                        <span id="summarySubtotal">₹0</span>
+                    </div>
+                    <div class="price-row-summary" id="discountRow" style="display:none;color:#16a34a;font-weight:600;">
+                        <span id="discountLabel">Discount</span>
+                        <span id="discountAmount">-₹0</span>
                     </div>
                     <div class="price-row-summary">
                         <span>Platform Fee</span>
@@ -279,7 +295,6 @@
         }
     </div>
 </div>
-
 <script>
     const pricePerDay = @Model.Price;
 
@@ -288,20 +303,42 @@
         const end   = document.getElementById('endDate').value;
 
         if (start && end) {
-            const s = new Date(start);
-            const e = new Date(end);
+            const s    = new Date(start);
+            const e    = new Date(end);
             const diff = Math.ceil((e - s) / (1000 * 60 * 60 * 24));
 
             if (diff > 0) {
                 const subtotal = diff * pricePerDay;
-                const total    = subtotal + 50; // platform fee
 
-                document.getElementById('numDays').value        = diff + ' days';
-                document.getElementById('numDaysHidden').value  = diff;
-                document.getElementById('summaryDays').textContent = diff + ' days';
-                document.getElementById('summaryTotal').textContent = '₹' + total;
-                document.getElementById('totalAmountHidden').value  = total;
-                document.getElementById('btnTotal').textContent     = total;
+                let discountPct   = 0;
+                let discountLabel = '';
+                if (diff >= 30) {
+                    discountPct   = 20;
+                    discountLabel = '📅 Monthly Discount (20% off)';
+                } else if (diff >= 7) {
+                    discountPct   = 10;
+                    discountLabel = '🗓️ Weekly Discount (10% off)';
+                }
+
+                const discountAmt = Math.round(subtotal * discountPct / 100);
+                const total       = subtotal - discountAmt + 50;
+
+                document.getElementById('numDays').value               = diff + ' days';
+                document.getElementById('numDaysHidden').value         = diff;
+                document.getElementById('summaryDays').textContent     = diff + ' days';
+                document.getElementById('summarySubtotal').textContent = '₹' + subtotal;
+                document.getElementById('summaryTotal').textContent    = '₹' + total;
+                document.getElementById('totalAmountHidden').value     = total;
+                document.getElementById('btnTotal').textContent        = total;
+
+                const discountRow = document.getElementById('discountRow');
+                if (discountAmt > 0) {
+                    discountRow.style.display = 'flex';
+                    document.getElementById('discountLabel').textContent  = discountLabel;
+                    document.getElementById('discountAmount').textContent = '-₹' + discountAmt;
+                } else {
+                    discountRow.style.display = 'none';
+                }
             }
         }
     }

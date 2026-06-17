@@ -11,7 +11,7 @@ namespace CareProjct.web.Models
         public string Address { get; set; }
         public string City { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
+        public string Password { get; set; } = "";
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string ContactNumber { get; set; }
@@ -23,35 +23,34 @@ namespace CareProjct.web.Models
         // ONLY Eldercare — no BabySitter
         public string Category { get; set; } = "Eldercare";
 
-        public decimal Price { get; set; }
+        public decimal Price { get; set; } = 0m;
 
         // ── Profile Image ──
-        public string ImagePath { get; set; }
+        public string ImagePath { get; set; } = "";
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 
         // ── Verification Documents (file paths) ──
         public string LicenseNumber { get; set; }
-        public string LicenseDocumentPath { get; set; }
+        public string LicenseDocumentPath { get; set; } = "";
         [NotMapped]
         public IFormFile LicenseDocumentFile { get; set; }
 
-        public string AadhaarPath { get; set; }
+        public string AadhaarPath { get; set; } = "";
         [NotMapped]
         public IFormFile AadhaarFile { get; set; }
 
-        public string PoliceClearancePath { get; set; }
+        public string PoliceClearancePath { get; set; } = "";
         [NotMapped]
         public IFormFile PoliceClearanceFile { get; set; }
 
         // ── Admin Verification ──
         // Pending / UnderReview / Approved / Rejected
         public string VerificationStatus { get; set; } = "Pending";
-        public string RejectionReason { get; set; }
+        public string RejectionReason { get; set; } = "";
         public DateTime? VerifiedOn { get; set; }
-         public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; }
 
-         
         // ── Agreements (legal proof) ──
         public bool AgreedToNurseAgreement { get; set; } = false;
         public bool AgreedToNDA { get; set; } = false;

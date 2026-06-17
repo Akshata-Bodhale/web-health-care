@@ -213,38 +213,48 @@
         <div class="collapse navbar-collapse" id="navbarNav">
 
             <!-- Left links — always visible -->
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
-                        <i class="fas fa-home me-1"></i> Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="ElderCareService">
-                        <i class="fas fa-hand-holding-heart me-1"></i> Elder Care
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="AboutUs">
-                        <i class="fas fa-info-circle me-1"></i> About Us
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="DisplayFeedbacks">
-                        <i class="fas fa-quote-left me-1"></i> Testimonials
-                    </a>
-                </li>
+            <!-- Left links -->
+<ul class="navbar-nav me-auto">
 
-                @* Browse Nurses — only for logged in customers *@
-                @if (Context.Session.GetString("UserType") == "Customer")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Caretaker" asp-action="CaretakerData">
-                            <i class="fas fa-search me-1"></i> Browse Nurses
-                        </a>
-                    </li>
-                }
+    @* Public links — hidden from Admin *@
+    @if (Context.Session.GetString("UserType") != "Admin")
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-home me-1"></i> Home
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="ElderCareService">
+                <i class="fas fa-hand-holding-heart me-1"></i> Elder Care
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="AboutUs">
+                <i class="fas fa-info-circle me-1"></i> About Us
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="DisplayFeedbacks">
+                <i class="fas fa-quote-left me-1"></i> Testimonials
+            </a>
+        </li>
+    }
 
+    @* Customer browse link *@
+    @if (Context.Session.GetString("UserType") == "Customer")
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Caretaker" asp-action="CaretakerData">
+                <i class="fas fa-search me-1"></i> Browse Nurses
+            </a>
+        </li>
+    }
+
+   
+</ul>
+
+        
                 @* Admin extra links *@
                 @if (Context.Session.GetString("UserType") == "Admin")
                 {

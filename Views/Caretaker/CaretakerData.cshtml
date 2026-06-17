@@ -107,19 +107,19 @@
         <select name="maxPrice">
             <option value="">💰 Any Price</option>
             <option value="800"
-                selected="@(ViewBag.SelectedPrice == "800" ? "selected" : null)">
+                selected="@(ViewBag.SelectedPrice != null && ViewBag.SelectedPrice.ToString() == "800" ? "selected" : null)">
                 Up to ₹800/day
             </option>
             <option value="1000"
-                selected="@(ViewBag.SelectedPrice == "1000" ? "selected" : null)">
+                selected="@(ViewBag.SelectedPrice != null && ViewBag.SelectedPrice.ToString() == "1000" ? "selected" : null)">
                 Up to ₹1000/day
             </option>
             <option value="1200"
-                selected="@(ViewBag.SelectedPrice == "1200" ? "selected" : null)">
+                selected="@(ViewBag.SelectedPrice != null && ViewBag.SelectedPrice.ToString() == "1200" ? "selected" : null)">
                 Up to ₹1200/day
             </option>
             <option value="1500"
-                selected="@(ViewBag.SelectedPrice == "1500" ? "selected" : null)">
+                selected="@(ViewBag.SelectedPrice != null && ViewBag.SelectedPrice.ToString() == "1500" ? "selected" : null)">
                 Up to ₹1500/day
             </option>
         </select>
@@ -149,18 +149,15 @@
                         <h3>@item.FullName</h3>
                         <div class="card-details">
                             <div class="detail-row">
-                                <div class="detail-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div>
-                                    <span class="detail-label">City</span>
-                                    <div class="detail-value">@item.City</div>
-                                </div>
+                                    <div class="detail-icon">📍</div>
+                                    <div>
+                                        <span class="detail-label">City</span>
+                                        <div class="detail-value">@item.City</div>
+                                    </div>
                             </div>
+
                             <div class="detail-row">
-                                <div class="detail-icon">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
+                                <div class="detail-icon">🎓</div>
                                 <div>
                                     <span class="detail-label">Qualification</span>
                                     <div class="detail-value">
@@ -170,15 +167,15 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="detail-row">
-                                <div class="detail-icon">
-                                    <i class="@(item.Gender == "Female" ? "fas fa-female" : "fas fa-male")"></i>
-                                </div>
+                                <div class="detail-icon">@(item.Gender == "Female" ? "👩" : "👨")</div>
                                 <div>
                                     <span class="detail-label">Gender</span>
                                     <div class="detail-value">@item.Gender</div>
                                 </div>
                             </div>
+
                         </div>
                         <div class="price-row">
                             <div class="price-tag">

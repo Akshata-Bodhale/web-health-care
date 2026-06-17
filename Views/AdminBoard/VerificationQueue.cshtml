@@ -73,23 +73,34 @@
             </div>
 
             <!-- Document Links -->
-            <div>
-                <strong style="color:#36625a;font-size:0.9rem;">Uploaded Documents:</strong>
-                <div class="doc-links mt-2">
-                    @if (!string.IsNullOrEmpty(nurse.LicenseDocumentPath))
-                    {
-                        <a href="@nurse.LicenseDocumentPath" target="_blank" class="doc-link">📄 Nursing License</a>
-                    }
-                    @if (!string.IsNullOrEmpty(nurse.AadhaarPath))
-                    {
-                        <a href="@nurse.AadhaarPath" target="_blank" class="doc-link">🪪 Aadhaar Card</a>
-                    }
-                    @if (!string.IsNullOrEmpty(nurse.PoliceClearancePath))
-                    {
-                        <a href="@nurse.PoliceClearancePath" target="_blank" class="doc-link">🔏 Police Clearance</a>
-                    }
-                </div>
-            </div>
+                    <div class="doc-links mt-2">
+            @if (!string.IsNullOrEmpty(nurse.LicenseDocumentPath))
+            {
+                <a href="@nurse.LicenseDocumentPath" target="_blank" rel="noopener"
+                class="doc-link" download>
+                    📄 Nursing License
+                </a>
+            }
+            else { <span style="color:#aaa;font-size:.85rem;">No license uploaded</span> }
+
+            @if (!string.IsNullOrEmpty(nurse.AadhaarPath))
+            {
+                <a href="@nurse.AadhaarPath" target="_blank" rel="noopener"
+                class="doc-link" download>
+                    🪪 Aadhaar Card
+                </a>
+            }
+            else { <span style="color:#aaa;font-size:.85rem;">No Aadhaar uploaded</span> }
+
+            @if (!string.IsNullOrEmpty(nurse.PoliceClearancePath))
+            {
+                <a href="@nurse.PoliceClearancePath" target="_blank" rel="noopener"
+                class="doc-link" download>
+                    🔏 Police Clearance
+                </a>
+            }
+            else { <span style="color:#aaa;font-size:.85rem;">No clearance uploaded</span> }
+        </div>
 
             <!-- Agreement Confirmation -->
             <div class="agree-list">

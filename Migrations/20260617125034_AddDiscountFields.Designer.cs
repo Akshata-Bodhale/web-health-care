@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareProjct.web.Migrations
 {
     [DbContext(typeof(Applicationdbcontext))]
-    [Migration("20260616155110_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260617125034_AddDiscountFields")]
+    partial class AddDiscountFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,59 +181,51 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BookingStatus")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CardHolderName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CardLastFourDigits")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
-                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmergencyContactName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmergencyContactPhone")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsRenewal")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Method")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("NumberOfDays")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("NurseRejectionReason")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("OrderDate")
@@ -243,44 +235,39 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OrderStatus")
-                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("OriginalAmount")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PatientAge")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PatientCondition")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientNotes")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentStatus")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("PreviousBookingId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ProductDetails")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RenewalCount")
@@ -290,11 +277,9 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ServiceAddress")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ShiftType")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
@@ -307,11 +292,9 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ZipCode")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
