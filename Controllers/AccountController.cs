@@ -16,18 +16,18 @@ namespace CareProjct.web.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly Applicationdbcontext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly OrderReceiptService _receiptService;
+        
 
         public AccountController(
             ILogger<AccountController> logger,
             Applicationdbcontext ct,
-            IWebHostEnvironment hostEnvironment,
-            OrderReceiptService order)
+            IWebHostEnvironment hostEnvironment)
+           
         {
             _logger          = logger;
             _context         = ct;
             _hostEnvironment = hostEnvironment;
-            _receiptService  = order;
+           
         }
 
         // ────────────────────────────────────
@@ -35,7 +35,7 @@ namespace CareProjct.web.Controllers
         // ────────────────────────────────────
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("MyBookings");
         }
 
        

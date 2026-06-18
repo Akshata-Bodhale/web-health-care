@@ -1,0 +1,34 @@
+@model List<CareProjct.web.Models.Caretaker>
+
+@{
+    ViewData["Title"] = "Approved Nurses";
+}
+
+<div class="container mt-4">
+    <h2>Approved Nurses</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th><th>City</th><th>Price/Day</th><th>Status</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nurse in Model)
+            {
+                <tr>
+                    <td>@nurse.FullName</td>
+                    <td>@nurse.City</td>
+                    <td>₹@nurse.Price</td>
+                    <td>@nurse.VerificationStatus</td>
+                    <td>
+                        <form asp-action="SuspendNurse" asp-controller="AdminBoard" method="post">
+                            <input type="hidden" name="id" value="@nurse.ID" />
+                            <button type="submit" class="btn btn-warning btn-sm"
+                                onclick="return confirm('Suspend this nurse?')">Suspend</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

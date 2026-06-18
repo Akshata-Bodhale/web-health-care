@@ -21,12 +21,7 @@ namespace CareProjct.web.Controllers
 
         public IActionResult Index()
         {
-            var viewModel = new ProductViewModel
-            {
-                Products = _context.Caretaker.ToList(),
-                Product = new Caretaker()
-            };
-            return View(viewModel);
+            return RedirectToAction("AdminDashboard");
         }
 
         public IActionResult AdminDashboard()

@@ -54,6 +54,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5Cb2FyZC9QYXltZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/workspaces/web-health-care/Views/AdminBoard/ProductList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5Cb2FyZC9Qcm9kdWN0TGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/workspaces/web-health-care/Views/AdminBoard/VerificationQueue.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5Cb2FyZC9WZXJpZmljYXRpb25RdWV1ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -108,10 +112,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/workspaces/web-health-care/Views/Home/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Mb2dpbi5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/workspaces/web-health-care/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/workspaces/web-health-care/Views/Home/Register.cshtml]

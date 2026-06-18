@@ -20,7 +20,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<CareProjct.web.Models.OrderReceiptService>();
+
 
 var app = builder.Build();
 
