@@ -2,7 +2,7 @@
 
 <style>
     body { background: #f5f0e3; font-family: 'Segoe UI', sans-serif; }
-    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .page-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
     h2 { color: #36625a; font-weight: 700; margin-bottom: 25px; }
     .nurse-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
     .nurse-header { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
@@ -21,7 +21,7 @@
     .reject-form.show { display:block; }
 </style>
 
-<div class="container">
+<div class="page-container">
     <h2>🔍 Nurse Verification Queue (@Model.Count pending)</h2>
 
     @if (TempData["Success"] != null)

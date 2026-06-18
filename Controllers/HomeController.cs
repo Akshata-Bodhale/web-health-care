@@ -21,7 +21,21 @@ namespace CareProjct.web.Controllers
             _Context = ct;
         }
 
-        public IActionResult Index()   { return View(); }
+        public IActionResult Index()
+        {
+            ViewBag.TotalNurses       = _Context.Caretaker
+                .Count(c => c.VerificationStatus == "Approved" && c.Available == true);
+
+            ViewBag.FamiliesServed    = _Context.OrderConfirm
+                .Select(o => o.UserId)
+                .Distinct()
+                .Count();
+
+            ViewBag.CompletedBookings = _Context.OrderConfirm
+                .Count(o => o.BookingStatus == "Completed");
+
+            return View();
+        }
         public IActionResult Privacy() { return View(); }
         public IActionResult ElderCareService() { return View(); }
         public IActionResult AboutUs() { return View(); }

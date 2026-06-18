@@ -70,5 +70,6 @@ namespace CareProjct.web.Models
         // ── Booking Duration Rules ──
         public int MaxRenewalsAllowed { get; set; } = 2;
         public int CurrentRenewalCount { get; set; } = 0;
+        public decimal TotalEarned { get; set; } = 0m;
     }
 }

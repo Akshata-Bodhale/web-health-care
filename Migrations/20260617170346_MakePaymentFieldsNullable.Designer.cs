@@ -3,6 +3,7 @@ using System;
 using CareProjct.web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareProjct.web.Migrations
 {
     [DbContext(typeof(Applicationdbcontext))]
-    partial class ApplicationdbcontextModelSnapshot : ModelSnapshot
+    [Migration("20260617170346_MakePaymentFieldsNullable")]
+    partial class MakePaymentFieldsNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
@@ -133,9 +136,6 @@ namespace CareProjct.web.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("TotalEarned")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("VerificationStatus")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -201,12 +201,6 @@ namespace CareProjct.web.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("CustomerPaidToAdminOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerPaymentStatus")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("DiscountPercent")
                         .HasColumnType("TEXT");
 
@@ -230,15 +224,6 @@ namespace CareProjct.web.Migrations
 
                     b.Property<int>("NumberOfDays")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("NursePaidOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("NursePayableAmount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NursePaymentStatus")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("NurseRejectionReason")
                         .HasColumnType("TEXT");
@@ -277,9 +262,6 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("PlatformFee")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("PreviousBookingId")

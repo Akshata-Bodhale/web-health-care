@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareProjct.web.Migrations
 {
     [DbContext(typeof(Applicationdbcontext))]
-    [Migration("20260617101207_InitialCreate")]
+    [Migration("20260617165357_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -187,9 +187,11 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CardHolderName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CardLastFourDigits")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("City")
@@ -199,6 +201,9 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmergencyContactName")
@@ -234,6 +239,9 @@ namespace CareProjct.web.Migrations
                     b.Property<string>("OrderStatus")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("OriginalAmount")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("PatientAge")
                         .HasColumnType("INTEGER");
 
@@ -250,9 +258,11 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentMethod")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentStatus")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
@@ -262,6 +272,7 @@ namespace CareProjct.web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ProductDetails")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RenewalCount")
@@ -352,7 +363,8 @@ namespace CareProjct.web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<string>("Amount")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BillingZip")

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareProjct.web.Migrations
 {
     [DbContext(typeof(Applicationdbcontext))]
-    [Migration("20260617125034_AddDiscountFields")]
-    partial class AddDiscountFields
+    [Migration("20260617173523_AddTotalEarnedToCaretaker")]
+    partial class AddTotalEarnedToCaretaker
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,6 +134,9 @@ namespace CareProjct.web.Migrations
 
                     b.Property<string>("RejectionReason")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalEarned")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VerificationStatus")
@@ -358,7 +361,8 @@ namespace CareProjct.web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<string>("Amount")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BillingZip")

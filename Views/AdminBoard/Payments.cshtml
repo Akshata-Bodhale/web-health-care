@@ -1,0 +1,213 @@
+@model List<CareProjct.web.Models.OrderConfirm>
+
+@{
+    var nurses = ViewBag.Nurses as List<CareProjct.web.Models.Caretaker>
+                 ?? new List<CareProjct.web.Models.Caretaker>();
+
+    CareProjct.web.Models.Caretaker GetNurse(string productDetails) {
+        if (int.TryParse(productDetails, out int id))
+            return nurses.FirstOrDefault(n => n.ID == id);
+        return null;
+    }
+}
+
+<style>
+    :root { --primary: #1a3c5e; --accent: #2d7dd2; --bg: #f1f5f9; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .wrap { max-width: 1200px; margin: 36px auto; padding: 0 20px; }
+    .page-title { color: var(--primary); font-weight: 800; font-size: 1.6rem; margin-bottom: 5px; }
+    .page-sub { color: #64748b; margin-bottom: 28px; }
+
+    /* Summary cards */
+    .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .sum-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; text-align: center; }
+    .sum-card .val { font-size: 1.6rem; font-weight: 800; }
+    .sum-card .lbl { color: #64748b; font-size: 0.82rem; margin-top: 4px; }
+
+    /* Table */
+    .card { background: white; border-radius: 14px; padding: 25px; border: 1px solid #e2e8f0; margin-bottom: 24px; }
+    .card-title { color: var(--primary); font-weight: 700; font-size: 1rem; border-bottom: 2px solid #dbeafe; padding-bottom: 10px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #f8fafc; color: #64748b; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px; text-align: left; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .badge-unpaid   { background: #fef3c7; color: #92400e; }
+    .badge-paid     { background: #dcfce7; color: #166534; }
+    .btn-sm-pay { border: none; border-radius: 7px; padding: 6px 14px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+    .btn-customer { background: #dbeafe; color: #1d4ed8; }
+    .btn-nurse    { background: #dcfce7; color: #166534; }
+    .btn-disabled { background: #f1f5f9; color: #aaa; cursor: not-allowed; }
+
+    .nurse-bank { font-size: 0.78rem; color: #64748b; margin-top: 3px; }
+    .alert-success { background: #dcfce7; color: #166534; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-weight: 600; }
+
+    @@media (max-width: 768px) { .summary-row { grid-template-columns: 1fr 1fr; } }
+</style>
+
+<div class="wrap">
+    <div class="page-title">💰 Payment Management</div>
+    <div class="page-sub">Track customer payments to admin and admin payments to nurses</div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-success">✅ @TempData["SuccessMessage"]</div>
+    }
+
+    @{
+        var totalCollectable  = Model.Sum(b => b.TotalAmount);
+        var collectedFromCust = Model.Where(b => b.CustomerPaymentStatus == "PaidToAdmin").Sum(b => b.TotalAmount);
+        var platformFees      = Model.Where(b => b.CustomerPaymentStatus == "PaidToAdmin").Sum(b => b.PlatformFee);
+        var paidToNurses      = Model.Where(b => b.NursePaymentStatus    == "PaidToNurse").Sum(b => b.NursePayableAmount);
+        var pendingNursePay   = Model.Where(b => b.CustomerPaymentStatus == "PaidToAdmin"
+                                              && b.NursePaymentStatus   == "Unpaid").Sum(b => b.NursePayableAmount);
+    }
+
+    <!-- Summary -->
+    <div class="summary-row">
+        <div class="sum-card">
+            <div class="val" style="color:#1d4ed8;">₹@totalCollectable</div>
+            <div class="lbl">Total Booking Value</div>
+        </div>
+        <div class="sum-card">
+            <div class="val" style="color:#166534;">₹@collectedFromCust</div>
+            <div class="lbl">Collected from Customers</div>
+        </div>
+        <div class="sum-card">
+            <div class="val" style="color:#9d174d;">₹@platformFees</div>
+            <div class="lbl">Platform Fees Earned</div>
+        </div>
+        <div class="sum-card">
+            <div class="val" style="color:#92400e;">₹@pendingNursePay</div>
+            <div class="lbl">Pending Nurse Payouts</div>
+        </div>
+    </div>
+
+    <!-- Payments Table -->
+    <div class="card">
+        <div class="card-title">📋 Completed Bookings — Payment Status</div>
+
+        @if (!Model.Any())
+        {
+            <div style="text-align:center;padding:40px;color:#94a3b8;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">📭</div>
+                <p>No completed bookings yet.</p>
+            </div>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Nurse</th>
+                            <th>Nurse Bank Details</th>
+                            <th>Total</th>
+                            <th>Platform Fee</th>
+                            <th>Nurse Gets</th>
+                            <th>Customer → Admin</th>
+                            <th>Admin → Nurse</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model)
+                        {
+                            var nurse = GetNurse(b.ProductDetails);
+                            <tr>
+                                <td style="color:#64748b;">#@b.Id</td>
+                                <td>
+                                    <div style="font-weight:600;">@b.FullName</div>
+                                    <div style="font-size:0.78rem;color:#94a3b8;">@b.PhoneNumber</div>
+                                    <div style="font-size:0.75rem;color:#64748b;margin-top:2px;">
+                                        Patient: @b.PatientName
+                                    </div>
+                                    <div style="font-size:0.75rem;color:#64748b;">
+                                        via @(b.PaymentMethod ?? "Cash")
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (nurse != null)
+                                    {
+                                        <div style="font-weight:600;">@nurse.FullName</div>
+                                        <div style="font-size:0.78rem;color:#94a3b8;">@nurse.ContactNumber</div>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#94a3b8;">@b.ProductDetails</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (nurse != null && !string.IsNullOrEmpty(nurse.BankAccountNumber))
+                                    {
+                                        <div class="nurse-bank">🏦 @nurse.BankName</div>
+                                        <div class="nurse-bank">A/C: @nurse.BankAccountNumber</div>
+                                        <div class="nurse-bank">IFSC: @nurse.IFSCCode</div>
+                                        <div class="nurse-bank">Name: @nurse.AccountHolderName</div>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#f59e0b;font-size:0.78rem;">⚠️ Bank details not added</span>
+                                    }
+                                </td>
+                                <td style="font-weight:700;color:#1a3c5e;">₹@b.TotalAmount</td>
+                                @{
+                                    var fee        = b.PlatformFee > 0 ? b.PlatformFee : 50m;
+                                    var nurseGets  = b.NursePayableAmount > 0 ? b.NursePayableAmount : (b.TotalAmount - 50m);
+                                }
+                                <td style="color:#9d174d;font-weight:600;">₹@fee</td>
+                                <td style="color:#166534;font-weight:700;">₹@nurseGets</td>
+
+                                <!-- Customer → Admin -->
+                                <td>
+                                    @if (b.CustomerPaymentStatus == "PaidToAdmin")
+                                    {
+                                        <span class="badge badge-paid">✅ Received</span>
+                                        <div style="font-size:0.72rem;color:#94a3b8;margin-top:3px;">
+                                            @b.CustomerPaidToAdminOn?.ToString("dd MMM yyyy")
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="MarkCustomerPaid" asp-controller="AdminBoard" method="post">
+                                            <input type="hidden" name="bookingId" value="@b.Id" />
+                                            <button type="submit" class="btn-sm-pay btn-customer">
+                                                💵 Mark Received
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+
+                                <!-- Admin → Nurse -->
+                                <td>
+                                    @if (b.NursePaymentStatus == "PaidToNurse")
+                                    {
+                                        <span class="badge badge-paid">✅ Paid</span>
+                                        <div style="font-size:0.72rem;color:#94a3b8;margin-top:3px;">
+                                            @b.NursePaidOn?.ToString("dd MMM yyyy")
+                                        </div>
+                                    }
+                                    else if (b.CustomerPaymentStatus == "PaidToAdmin")
+                                    {
+                                        <form asp-action="MarkNursePaid" asp-controller="AdminBoard" method="post">
+                                            <input type="hidden" name="bookingId" value="@b.Id" />
+                                            <button type="submit" class="btn-sm-pay btn-nurse">
+                                                🏦 Mark Paid
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn-sm-pay btn-disabled" disabled>
+                                            ⏳ Awaiting Customer
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

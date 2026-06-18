@@ -61,5 +61,14 @@
         public string? PhoneNumber { get; set; }
         public string? EmergencyContactName { get; set; }
         public string? EmergencyContactPhone { get; set; }
+
+
+        // ── ADMIN PAYMENT TRACKING ──
+        public string? CustomerPaymentStatus { get; set; } = "Unpaid"; // Unpaid / PaidToAdmin
+        public DateTime? CustomerPaidToAdminOn { get; set; }
+        public string? NursePaymentStatus { get; set; } = "Unpaid";    // Unpaid / PaidToNurse
+        public DateTime? NursePaidOn { get; set; }
+        public decimal PlatformFee { get; set; } = 50m;
+        public decimal NursePayableAmount { get; set; } = 0m;
     }
 }

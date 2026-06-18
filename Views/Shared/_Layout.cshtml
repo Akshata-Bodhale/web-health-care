@@ -35,10 +35,10 @@
         }
 
         .nav-link {
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             font-weight: 500;
             color: #444 !important;
-            padding: 7px 14px !important;
+            padding: 6px 10px !important;
             border-radius: 6px;
             transition: all 0.2s ease;
         }
@@ -196,7 +196,11 @@
 <!-- ══════════════════════════════════════
      NAVBAR
 ══════════════════════════════════════ -->
-<nav class="navbar navbar-expand-lg sticky-top">
+<nav class="navbar navbar-expand-lg sticky-top px-2">
+    <style>
+        .navbar .navbar-nav { gap: 2px; }
+        .navbar-brand { margin-right: 30px; }
+    </style>
     <div class="container">
 
         <!-- Brand -->
@@ -210,7 +214,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
             <!-- Left links — always visible -->
             <!-- Left links -->
@@ -249,13 +253,8 @@
                 <i class="fas fa-search me-1"></i> Browse Nurses
             </a>
         </li>
-    }
+    }  
 
-   
-</ul>
-
-        
-                @* Admin extra links *@
                 @if (Context.Session.GetString("UserType") == "Admin")
                 {
                     <li class="nav-item">
@@ -271,6 +270,11 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="AdminBoard" asp-action="AllBookings">
                             <i class="fas fa-calendar-alt me-1"></i> All Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="AdminBoard" asp-action="Payments">
+                            <i class="fas fa-money-bill-wave me-1"></i> Payments
                         </a>
                     </li>
                 }
@@ -373,15 +377,7 @@
                                 </span>
                             </li>
                             <li><hr class="dropdown-divider my-1"></li>
-                            <li>
-                                <a class="dropdown-item"
-                                   asp-controller="Caretaker"
-                                   asp-action="MyDashboard">
-                                    <i class="fas fa-tachometer-alt me-2"
-                                       style="color:var(--primary);"></i>
-                                    My Dashboard
-                                </a>
-                            </li>
+                            
                             <li>
                                 <a class="dropdown-item"
                                    asp-controller="Caretaker"
@@ -402,6 +398,16 @@
                                     My Profile
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   asp-controller="Caretaker"
+                                   asp-action="EditProfile">
+                                    <i class="fas fa-user-edit me-2"
+                                       style="color:var(--primary);"></i>
+                                    Edit Profile
+                                </a>
+                            </li>
+
                                                         <li><hr class="dropdown-divider my-1"></li>
                             <li>
                                 <a class="dropdown-item text-danger"

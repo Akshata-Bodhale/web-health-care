@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CareProjct.web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+867b161ee0716bb468cf197fd6a797e4241875a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c178932246c0714f37b9591cd2c7a2d81c8eecb")]
 [assembly: System.Reflection.AssemblyProductAttribute("CareProjct.web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CareProjct.web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

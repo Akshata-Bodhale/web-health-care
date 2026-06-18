@@ -1,0 +1,245 @@
+@model CareProjct.web.Models.OrderConfirm
+
+@{
+    var nurse      = ViewBag.Nurse as CareProjct.web.Models.Caretaker;
+    decimal ppd    = (decimal)ViewBag.PricePerDay;
+    int renewsLeft = (int)ViewBag.RenewalsLeft;
+}
+
+<style>
+    :root { --primary: #36625a; --accent: #f8b84c; --bg: #f5f0e3; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .wrap { max-width: 780px; margin: 40px auto; padding: 0 20px; }
+    .page-title { color: var(--primary); font-weight: 700; font-size: 1.6rem; margin-bottom: 5px; }
+    .page-sub { color: #888; margin-bottom: 25px; font-size: 0.9rem; }
+
+    .renewal-banner { background: #d1ecf1; border-radius: 10px; padding: 14px 18px; margin-bottom: 25px; color: #0c5460; font-size: 0.88rem; }
+    .renewal-banner strong { font-size: 1rem; }
+
+    /* Nurse summary */
+    .nurse-bar { background: white; border-radius: 12px; padding: 18px 22px; display: flex; align-items: center; gap: 18px; box-shadow: 0 3px 14px rgba(0,0,0,0.07); margin-bottom: 25px; }
+    .nurse-bar img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+    .nurse-bar .name { font-weight: 700; color: var(--primary); font-size: 1.05rem; }
+    .nurse-bar .meta { color: #888; font-size: 0.85rem; }
+    .nurse-bar .price { margin-left: auto; font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+
+    .card { background: white; border-radius: 14px; padding: 25px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); margin-bottom: 22px; }
+    .card-title { color: var(--primary); font-weight: 700; font-size: 0.98rem; border-bottom: 2px solid var(--accent); padding-bottom: 9px; margin-bottom: 18px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 10px 13px; border: 1.5px solid #e0e0e0;
+        border-radius: 8px; font-size: 0.9rem; box-sizing: border-box; transition: border 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
+
+    /* Cost summary */
+    .cost-box { background: #f8f9fa; border-radius: 10px; padding: 18px; margin-top: 5px; }
+    .cost-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; color: #555; }
+    .cost-row.total { font-weight: 800; font-size: 1.1rem; color: var(--primary); border-top: 1px solid #dee2e6; padding-top: 10px; margin-top: 5px; }
+    .discount-tag { background: #d4edda; color: #155724; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+
+    .btn-submit { background: var(--primary); color: white; border: none; border-radius: 10px; padding: 14px; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 5px; }
+    .btn-submit:hover { background: #2a4f48; }
+    .btn-cancel { display: block; text-align: center; margin-top: 12px; color: #888; font-size: 0.88rem; text-decoration: none; }
+
+    @@media (max-width: 600px) {
+        .two-col, .three-col { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="wrap">
+    <div class="page-title">🔁 Renew Booking</div>
+    <div class="page-sub">Extend care with the same nurse. Dates are pre-filled from your last booking.</div>
+
+    <div class="renewal-banner">
+        🔁 <strong>Renewal Booking</strong> — You have <strong>@renewsLeft renewal(s)</strong> remaining with this nurse.
+        Previous booking details are pre-filled below. Adjust dates and days as needed.
+    </div>
+
+    <!-- Nurse Summary -->
+    @if (nurse != null)
+    {
+        <div class="nurse-bar">
+            <img src="@(string.IsNullOrEmpty(nurse.ImagePath) ? "/images/default-nurse.png" : nurse.ImagePath)" alt="Nurse" />
+            <div>
+                <div class="name">@nurse.FullName</div>
+                <div class="meta">@nurse.Qualification &nbsp;|&nbsp; @nurse.Experience &nbsp;|&nbsp; 📍 @nurse.City</div>
+            </div>
+            <div class="price">₹@nurse.Price<span style="font-size:0.75rem;font-weight:400;">/day</span></div>
+        </div>
+    }
+
+    <form asp-action="RenewBooking" asp-controller="Account" method="post">
+        <input type="hidden" name="CaretakerId"       value="@nurse.ID" />
+        <input type="hidden" name="PricePerDay"       value="@ppd" />
+        <input type="hidden" name="IsRenewal"         value="true" />
+        <input type="hidden" name="PreviousBookingId" value="@ViewBag.OriginalBookingId" />
+        <input type="hidden" name="RenewalCount"      value="@Model.RenewalCount" />
+
+        <!-- Patient Details -->
+        <div class="card">
+            <div class="card-title">🧓 Patient Details</div>
+            <div class="two-col">
+                <div class="form-group">
+                    <label>Patient Full Name</label>
+                    <input type="text" name="PatientName" value="@Model.PatientName" required />
+                </div>
+                <div class="form-group">
+                    <label>Patient Age</label>
+                    <input type="number" name="PatientAge" value="@Model.PatientAge" min="1" max="120" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Medical Condition</label>
+                <input type="text" name="PatientCondition" value="@Model.PatientCondition" required />
+            </div>
+            <div class="form-group">
+                <label>Special Notes (optional)</label>
+                <textarea name="PatientNotes" rows="2">@Model.PatientNotes</textarea>
+            </div>
+        </div>
+
+        <!-- Service Details -->
+        <div class="card">
+            <div class="card-title">📅 Service Details</div>
+            <div class="three-col">
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" name="StartDate" id="startDate"
+                           value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                           onchange="calcDays()" required />
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" name="EndDate" id="endDate"
+                           value="@Model.EndDate.ToString("yyyy-MM-dd")"
+                           onchange="calcDays()" required />
+                </div>
+                <div class="form-group">
+                    <label>Number of Days</label>
+                    <input type="number" name="NumberOfDays" id="numDays"
+                           value="@Model.NumberOfDays" min="1" readonly
+                           style="background:#f8f9fa;" />
+                </div>
+            </div>
+            <div class="two-col">
+                <div class="form-group">
+                    <label>Shift Type</label>
+                    <select name="ShiftType">
+                        <option value="Day (8am-8pm)"   selected="@(Model.ShiftType == "Day (8am-8pm)" ? "selected" : null)">Day (8am–8pm)</option>
+                        <option value="Night (8pm-8am)" selected="@(Model.ShiftType == "Night (8pm-8am)" ? "selected" : null)">Night (8pm–8am)</option>
+                        <option value="Full Day (24hr)" selected="@(Model.ShiftType == "Full Day (24hr)" ? "selected" : null)">Full Day (24hr)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select name="PaymentMethod">
+                        <option value="Cash">Cash</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Service Address</label>
+                <input type="text" name="ServiceAddress" value="@Model.ServiceAddress" required />
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="card">
+            <div class="card-title">📞 Contact Information</div>
+            <div class="two-col">
+                <div class="form-group">
+                    <label>Your Full Name</label>
+                    <input type="text" name="FullName" value="@Model.FullName" required />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                </div>
+            </div>
+            <div class="two-col">
+                <div class="form-group">
+                    <label>Emergency Contact Name</label>
+                    <input type="text" name="EmergencyContactName" value="@Model.EmergencyContactName" />
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact Phone</label>
+                    <input type="text" name="EmergencyContactPhone" value="@Model.EmergencyContactPhone" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Summary -->
+        <div class="card">
+            <div class="card-title">💰 Cost Summary</div>
+            <div class="cost-box">
+                <div class="cost-row">
+                    <span>Rate</span>
+                    <span>₹@ppd / day</span>
+                </div>
+                <div class="cost-row">
+                    <span>Days</span>
+                    <span id="summaryDays">@Model.NumberOfDays days</span>
+                </div>
+                <div class="cost-row">
+                    <span>Subtotal</span>
+                    <span id="summaryGross">₹@(ppd * Model.NumberOfDays)</span>
+                </div>
+                <div class="cost-row">
+                    <span>Discount <span id="discountTag" class="discount-tag"></span></span>
+                    <span id="summaryDiscount">₹0</span>
+                </div>
+                <div class="cost-row total">
+                    <span>Total Payable</span>
+                    <span id="summaryTotal">₹@(ppd * Model.NumberOfDays)</span>
+                </div>
+            </div>
+
+            <div style="margin-top:15px;">
+                <label style="display:flex;align-items:center;gap:8px;font-size:0.88rem;color:#555;cursor:pointer;">
+                    <input type="checkbox" name="AcceptedBookingTerms" value="true" required />
+                    I agree to the booking terms and conditions
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">🔁 Confirm Renewal Booking</button>
+        <a href="/Account/MyBookings" class="btn-cancel">← Cancel and go back</a>
+    </form>
+</div>
+
+<script>
+    const pricePerDay = @ppd;
+
+    function calcDays() {
+        const start = new Date(document.getElementById('startDate').value);
+        const end   = new Date(document.getElementById('endDate').value);
+        if (!start || !end || end <= start) return;
+
+        const days = Math.round((end - start) / (1000 * 60 * 60 * 24));
+        document.getElementById('numDays').value = days;
+
+        const gross = pricePerDay * days;
+        let discPct = 0;
+        if (days >= 28)     discPct = 25;
+        else if (days === 7) discPct = 10;
+
+        const discount = gross * discPct / 100;
+        const total    = gross - discount;
+
+        document.getElementById('summaryDays').textContent    = days + ' days';
+        document.getElementById('summaryGross').textContent   = '₹' + gross.toFixed(1);
+        document.getElementById('summaryDiscount').textContent = discPct > 0 ? '-₹' + discount.toFixed(1) : '₹0';
+        document.getElementById('summaryTotal').textContent   = '₹' + total.toFixed(1);
+        document.getElementById('discountTag').textContent    = discPct > 0 ? discPct + '% off' : '';
+    }
+
+    // Run on load to populate summary
+    calcDays();
+</script>

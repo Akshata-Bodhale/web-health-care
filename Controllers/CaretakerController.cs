@@ -20,7 +20,6 @@ namespace CareProjct.web.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
-        // ── Registration Form (GET) ──
         public IActionResult Caretaker()
         {
             var email = HttpContext.Session.GetString("UserEmail") 
@@ -50,7 +49,6 @@ namespace CareProjct.web.Controllers
             return View(new Caretaker());
         }
 
-        // ── Registration Form (POST) ──
         [HttpPost]
         public async Task<IActionResult> Caretaker(Caretaker product)
         {
@@ -60,7 +58,6 @@ namespace CareProjct.web.Controllers
                 Console.WriteLine($"📝 Name: {product.FullName}");
                 Console.WriteLine($"📝 Email: {product.Email}");
 
-                // ── Prevent duplicate profile ──
                 var exists = _Context.Caretaker
                     .Any(c => c.Email == product.Email);
                 if (exists)
@@ -70,39 +67,34 @@ namespace CareProjct.web.Controllers
                     return View(product);
                 }
 
-                // ── Save profile image ──
                 if (product.ImageFile != null && product.ImageFile.Length > 0)
                 {
-                    product.ImagePath = await SaveFile(product.ImageFile, "Images");
+                    product.ImagePath = await SaveFile(product.ImageFile, "images");
                     Console.WriteLine($"✅ Image saved: {product.ImagePath}");
                 }
 
-                // ── Save nursing license document ──
                 if (product.LicenseDocumentFile != null && product.LicenseDocumentFile.Length > 0)
                 {
-                    product.LicenseDocumentPath = await SaveFile(product.LicenseDocumentFile, "Documents");
+                    product.LicenseDocumentPath = await SaveFile(product.LicenseDocumentFile, "documents");
                     Console.WriteLine($"✅ License saved: {product.LicenseDocumentPath}");
                 }
 
-                // ── Save Aadhaar scan ──
                 if (product.AadhaarFile != null && product.AadhaarFile.Length > 0)
                 {
-                    product.AadhaarPath = await SaveFile(product.AadhaarFile, "Documents");
+                    product.AadhaarPath = await SaveFile(product.AadhaarFile, "documents");
                     Console.WriteLine($"✅ Aadhaar saved: {product.AadhaarPath}");
                 }
 
-                // ── Save police clearance ──
                 if (product.PoliceClearanceFile != null && product.PoliceClearanceFile.Length > 0)
                 {
-                    product.PoliceClearancePath = await SaveFile(product.PoliceClearanceFile, "Documents");
+                    product.PoliceClearancePath = await SaveFile(product.PoliceClearanceFile, "documents");
                     Console.WriteLine($"✅ Police clearance saved: {product.PoliceClearancePath}");
                 }
 
-                // ✅ CRITICAL: Set these fields BEFORE saving
                 product.Category = "Eldercare";
-                product.VerificationStatus = "Pending";       // ← For admin to see
-                product.RegistrationDate = DateTime.Now;      // ← When registered
-                product.Available = false;                     // ← Not live yet
+                product.VerificationStatus = "Pending";
+                product.RegistrationDate = DateTime.Now;
+                product.Available = false;
 
                 Console.WriteLine($"💾 Setting fields:");
                 Console.WriteLine($"   - Category: {product.Category}");
@@ -110,14 +102,12 @@ namespace CareProjct.web.Controllers
                 Console.WriteLine($"   - RegistrationDate: {product.RegistrationDate}");
                 Console.WriteLine($"   - Available: {product.Available}");
 
-                // ── Save to database ──
                 _Context.Caretaker.Add(product);
                 await _Context.SaveChangesAsync();
 
                 Console.WriteLine($"✅ Saved to database!");
                 Console.WriteLine($"✅ Caretaker ID: {product.ID}");
 
-                // ── Verify it was saved ──
                 var saved = _Context.Caretaker.FirstOrDefault(c => c.Email == product.Email);
                 if (saved != null)
                 {
@@ -128,7 +118,6 @@ namespace CareProjct.web.Controllers
                     Console.WriteLine($"   Available: {saved.Available}");
                 }
 
-                // ── Set session ──
                 HttpContext.Session.SetString("UserEmail", product.Email);
                 HttpContext.Session.SetString("UserName", product.FullName);
                 HttpContext.Session.SetString("UserType", "Caretaker");
@@ -162,34 +151,26 @@ namespace CareProjct.web.Controllers
             }
         }
 
-        // ── Registration Pending Page ──
         public IActionResult RegistrationPending()
         {
             return View();
         }
 
-        // ── Browse Nurses (Customer View) ──
-        public IActionResult CaretakerData(string city = null, string gender = null, decimal? maxPrice = null)
+        public IActionResult CaretakerData(string city = null)
         {
             var query = _Context.Caretaker
-                .Where(p => p.VerificationStatus == "Approved");
+                .Where(p => p.Available == true
+                         && p.VerificationStatus == "Approved"
+                         && p.Category == "Eldercare");
 
             if (!string.IsNullOrEmpty(city))
                 query = query.Where(p => p.City == city);
 
-            if (!string.IsNullOrEmpty(gender))
-                query = query.Where(p => p.Gender == gender);
-
-            if (maxPrice.HasValue && maxPrice > 0)
-                query = query.Where(p => p.Price <= maxPrice.Value);
-
             var data = query.ToList();
 
-            ViewBag.SelectedCity   = city;
-            ViewBag.SelectedGender = gender;
-            ViewBag.SelectedPrice  = maxPrice;
+            ViewBag.SelectedCity = city;
             ViewBag.Cities = _Context.Caretaker
-                .Where(p => p.VerificationStatus == "Approved")
+                .Where(p => p.Available == true && p.VerificationStatus == "Approved")
                 .Select(p => p.City)
                 .Distinct()
                 .ToList();
@@ -197,7 +178,6 @@ namespace CareProjct.web.Controllers
             return View(data);
         }
 
-        // ── Single Nurse Profile ──
         [UserAuthenication]
         public IActionResult CaretakerProfile(int ID)
         {
@@ -206,19 +186,40 @@ namespace CareProjct.web.Controllers
             return View(user);
         }
 
-        // ── Nurse Dashboard ──
         [UserAuthenication]
         public IActionResult MyDashboard()
         {
+            Console.WriteLine("\n📊 ========== NURSE DASHBOARD LOAD ==========");
+
             var email = HttpContext.Session.GetString("UserEmail") 
                      ?? HttpContext.Session.GetString("Email");
+            
+            Console.WriteLine($"📊 Nurse Email: {email}");
+
             var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
 
-            if (nurse == null) return RedirectToAction("Login", "Home");
+            if (nurse == null)
+            {
+                Console.WriteLine("❌ Nurse not found!");
+                return RedirectToAction("Login", "Home");
+            }
+
+            Console.WriteLine($"📊 Nurse ID: {nurse.ID}");
 
             var allBookings = _Context.OrderConfirm
                 .Where(o => o.ProductDetails == nurse.ID.ToString())
                 .ToList();
+
+            Console.WriteLine($"📊 Total Bookings: {allBookings.Count}");
+
+            decimal totalEarned = 0;
+            foreach (var booking in allBookings.Where(b => b.PaymentStatus == "Paid"))
+            {
+                totalEarned += booking.TotalAmount;
+                Console.WriteLine($"📊 Booking {booking.Id}: ₹{booking.TotalAmount} (Status: {booking.BookingStatus})");
+            }
+
+            Console.WriteLine($"📊 Total Earned: ₹{totalEarned}");
 
             var vm = new CaretakerDashboardViewModel
             {
@@ -227,15 +228,16 @@ namespace CareProjct.web.Controllers
                     .Where(b => b.BookingStatus == "Requested").ToList(),
                 ActiveBookings = allBookings
                     .Where(b => b.BookingStatus == "Accepted"
-                             || b.BookingStatus == "ServiceStarted").ToList(),
+                             || b.BookingStatus == "ServiceStarted"
+                             || b.BookingStatus == "Confirmed").ToList(),
                 CompletedBookings = allBookings
                     .Where(b => b.BookingStatus == "Completed").ToList(),
-                TotalEarned = allBookings
-                    .Where(b => b.PaymentStatus == "Paid")
-                    .Sum(b => b.TotalAmount),
+                TotalEarned = totalEarned,
                 TotalPatientsServed = allBookings
                     .Count(b => b.BookingStatus == "Completed")
             };
+
+            Console.WriteLine($"========== DASHBOARD LOADED ==========\n");
 
             return View(vm);
         }
@@ -296,12 +298,59 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyDashboard");
         }
 
+        [UserAuthenication]
+        public IActionResult EditProfile()
+        {
+            var email = HttpContext.Session.GetString("UserEmail")
+                     ?? HttpContext.Session.GetString("Email");
+            var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
+            if (nurse == null) return RedirectToAction("Login", "Home");
+            return View(nurse);
+        }
+
+        [HttpPost]
+        [UserAuthenication]
+        public async Task<IActionResult> EditProfile(Caretaker model)
+        {
+            var email = HttpContext.Session.GetString("UserEmail")
+                     ?? HttpContext.Session.GetString("Email");
+            var nurse = _Context.Caretaker.FirstOrDefault(c => c.Email == email);
+            if (nurse == null) return RedirectToAction("Login", "Home");
+
+            // Only update safe fields — no verification fields touched
+            nurse.FullName      = model.FullName;
+            nurse.ContactNumber = model.ContactNumber;
+            nurse.City          = model.City;
+            nurse.Address       = model.Address;
+            nurse.Price         = model.Price;
+
+            // Bank details
+            nurse.AccountHolderName = model.AccountHolderName;
+            nurse.BankAccountNumber = model.BankAccountNumber;
+            nurse.IFSCCode          = model.IFSCCode;
+            nurse.BankName          = model.BankName;
+
+            // Profile photo — only replace if a new one is uploaded
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+                nurse.ImagePath = await SaveFile(model.ImageFile, "images");
+
+            _Context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction("MyDashboard");
+        }
+        
         private async Task<string> SaveFile(IFormFile file, string folder)
         {
+            // Always use lowercase folder names for consistency
+            string folderName = folder.ToLower();  // "images" or "documents"
+
             string uniqueFileName = Guid.NewGuid().ToString()
                 + "_" + Path.GetFileName(file.FileName);
+
+            // Save to wwwroot/images/ or wwwroot/documents/
             string uploadsFolder = Path.Combine(
-                _hostEnvironment.WebRootPath, folder);
+                _hostEnvironment.WebRootPath, folderName);
 
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
@@ -310,7 +359,8 @@ namespace CareProjct.web.Controllers
             using (var fileStream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(fileStream);
 
-            return "/" + folder + "/" + uniqueFileName;
+            // Return web-accessible path like /images/filename.jpg
+            return "/" + folderName + "/" + uniqueFileName;
         }
 
         [UserAuthenication]

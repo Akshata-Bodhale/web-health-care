@@ -260,6 +260,22 @@
                     <input type="hidden" name="TotalAmount" id="totalAmountHidden">
                 </div>
 
+                <!-- Step 4: Payment Method -->
+                <div class="section-title" style="font-size:1rem;margin-top:25px;">Step 4 — Payment Preference</div>
+                <div class="mb-3">
+                    <label class="form-label">How would you prefer to pay? *</label>
+                    <select class="form-select" name="PaymentMethod"
+                            id="paymentMethod" onchange="showPaymentNote()" required>
+                        <option value="">Select payment method</option>
+                        <option value="Cash">💵 Cash</option>
+                        <option value="UPI">📱 UPI</option>
+                        <option value="Bank Transfer">🏦 Bank Transfer</option>
+                    </select>
+                </div>
+                <div id="paymentNote" style="display:none;border-radius:8px;padding:12px 16px;margin-bottom:15px;font-size:0.85rem;"></div>
+
+
+                
                 <!-- Agreement -->
                 <div class="agree-box">
                     <strong style="color:var(--primary);">Booking Terms & Cancellation Policy</strong>
@@ -345,4 +361,22 @@
 
     document.getElementById('startDate').addEventListener('change', calculateTotal);
     document.getElementById('endDate').addEventListener('change', calculateTotal);
+
+    function showPaymentNote() {
+        const method = document.getElementById('paymentMethod').value;
+        const note   = document.getElementById('paymentNote');
+        const msgs   = {
+            'Cash':          { bg:'#fff3cd', color:'#856404', text:'💵 You will pay the nurse in cash on the service start date.' },
+            'UPI':           { bg:'#d1ecf1', color:'#0c5460', text:'📱 The nurse will share their UPI ID after confirming the booking.' },
+            'Bank Transfer': { bg:'#d4edda', color:'#155724', text:'🏦 The nurse will share bank details after confirming the booking.' }
+        };
+        if (msgs[method]) {
+            note.style.display    = 'block';
+            note.style.background = msgs[method].bg;
+            note.style.color      = msgs[method].color;
+            note.textContent      = msgs[method].text;
+        } else {
+            note.style.display = 'none';
+        }
+    }
 </script>

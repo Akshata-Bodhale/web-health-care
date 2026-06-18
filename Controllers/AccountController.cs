@@ -4,7 +4,6 @@ using CareProjct.web.Filter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -39,71 +38,10 @@ namespace CareProjct.web.Controllers
             return View();
         }
 
-        // ────────────────────────────────────
-        //  CART
-        // ────────────────────────────────────
-        [UserAuthenication]
-        public IActionResult AddToCart(int id)
-        {
-            var product = _context.Caretaker.FirstOrDefault(p => p.ID == id);
-            if (product == null) return NotFound();
+       
 
-            List<CartItem> cart =
-                HttpContext.Session.GetObject<List<CartItem>>("Cart")
-                ?? new List<CartItem>();
 
-            var cartItem = cart.FirstOrDefault(c => c.ID == id);
-            if (cartItem != null)
-            {
-                cartItem.Quantity++;
-            }
-            else
-            {
-                cart.Add(new CartItem
-                {
-                    ID        = product.ID,
-                    FullName  = product.FullName,
-                    ImagePath = product.ImagePath,
-                    Price     = product.Price,
-                    Category  = product.Category,
-                    Gender    = product.Gender,
-                    Quantity  = 1
-                });
-            }
-
-            HttpContext.Session.SetObject("Cart", cart);
-            return RedirectToAction("Cart");
-        }
-
-        [UserAuthenication]
-        public IActionResult Cart()
-        {
-            var cart =
-                HttpContext.Session.GetObject<List<CartItem>>("Cart")
-                ?? new List<CartItem>();
-
-            if (cart.Count == 0)
-                ViewData["Message"] = "Your cart is empty.";
-
-            return View(cart);
-        }
-
-        public IActionResult RemoveFromCart(int id)
-        {
-            var cart = HttpContext.Session
-                .GetObject<List<CartItem>>("Cart");
-
-            if (cart != null)
-            {
-                var item = cart.FirstOrDefault(c => c.ID == id);
-                if (item != null)
-                {
-                    cart.Remove(item);
-                    HttpContext.Session.SetObject("Cart", cart);
-                }
-            }
-            return RedirectToAction("Cart");
-        }
+        
 
         // ────────────────────────────────────
         //  BOOK NURSE (from CaretakerProfile)
@@ -118,8 +56,13 @@ namespace CareProjct.web.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Home");
 
-            model.UserId          = userId;
-            model.OrderDate       = DateTime.Now;
+            // Pull actual customer name from Register table
+            if (int.TryParse(userId, out int userIdInt))
+            {
+                var customer = _context.Register.FirstOrDefault(u => u.ID == userIdInt);
+                if (customer != null)
+                    model.FullName = customer.FirstName + " " + customer.LastName;
+            }
             model.BookingStatus   = "Requested";
             model.PaymentStatus   = "Pending";
             model.OrderStatus     = "Confirmed";
@@ -148,6 +91,14 @@ namespace CareProjct.web.Controllers
             model.ZipCode  = "N/A";
             model.Country  = "India";
             model.Method   = model.PaymentMethod ?? "Cash";
+            model.CardHolderName        = string.IsNullOrEmpty(model.CardHolderName)
+                                          ? (model.FullName ?? "N/A")
+                                          : model.CardHolderName;
+            model.CardLastFourDigits    = "N/A";
+            model.PlatformFee           = 50m;
+            model.NursePayableAmount    = model.TotalAmount - 50m;
+            model.CustomerPaymentStatus = "Unpaid";
+            model.NursePaymentStatus    = "Unpaid";
 
             _context.OrderConfirm.Add(model);
             _context.SaveChanges();
@@ -158,6 +109,136 @@ namespace CareProjct.web.Controllers
             return RedirectToAction("MyBookings");
         }
 
+        [HttpPost]
+public IActionResult MarkAsPaid(int bookingId)
+{
+    var booking = _context.OrderConfirm.FirstOrDefault(o => o.Id == bookingId);
+    if (booking == null) return NotFound();
+
+    booking.PaymentStatus = "Paid";
+    booking.PaymentDate   = DateTime.Now;
+
+    // Add earnings to nurse
+    int caretakerId = int.Parse(booking.ProductDetails);
+    var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == caretakerId);
+    if (nurse != null)
+        nurse.TotalEarned += booking.TotalAmount;
+
+    _context.SaveChanges();
+
+    TempData["SuccessMessage"] = "Payment of ₹" + booking.TotalAmount + " completed!";
+    return RedirectToAction("MyBookings");
+}
+
+
+// ────────────────────────────────────
+        //  RENEW BOOKING
+        // ────────────────────────────────────
+        [UserAuthenication]
+        public IActionResult RenewBooking(int bookingId)
+        {
+            var original = _context.OrderConfirm.FirstOrDefault(b => b.Id == bookingId);
+            if (original == null) return NotFound();
+
+            int caretakerId = int.Parse(original.ProductDetails);
+            var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == caretakerId);
+            if (nurse == null) return NotFound();
+
+            // Check renewal limit
+            if (nurse.CurrentRenewalCount >= nurse.MaxRenewalsAllowed)
+            {
+                TempData["ErrorMessage"] = $"This nurse has reached the maximum renewal limit of {nurse.MaxRenewalsAllowed}.";
+                return RedirectToAction("MyBookings");
+            }
+
+            // Pre-fill form with previous booking data, new dates start from last end date
+            var model = new OrderConfirm
+            {
+                ProductDetails       = original.ProductDetails,
+                PatientName          = original.PatientName,
+                PatientAge           = original.PatientAge,
+                PatientCondition     = original.PatientCondition,
+                PatientNotes         = original.PatientNotes,
+                ServiceAddress       = original.ServiceAddress,
+                ShiftType            = original.ShiftType,
+                StartDate            = original.EndDate,           // continues from last end
+                EndDate              = original.EndDate.AddDays(original.NumberOfDays),
+                NumberOfDays         = original.NumberOfDays,
+                FullName             = original.FullName,
+                PhoneNumber          = original.PhoneNumber,
+                EmergencyContactName = original.EmergencyContactName,
+                EmergencyContactPhone= original.EmergencyContactPhone,
+                IsRenewal            = true,
+                PreviousBookingId    = original.Id,
+                RenewalCount         = original.RenewalCount + 1
+            };
+
+            ViewBag.Nurse             = nurse;
+            ViewBag.PricePerDay       = nurse.Price;
+            ViewBag.OriginalBookingId = bookingId;
+            ViewBag.RenewalsLeft      = nurse.MaxRenewalsAllowed - nurse.CurrentRenewalCount;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [UserAuthenication]
+        public IActionResult RenewBooking(OrderConfirm model, int CaretakerId, decimal PricePerDay)
+        {
+            var userId = HttpContext.Session.GetString("userId");
+            if (userId == null)
+                return RedirectToAction("Login", "Home");
+
+            var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == CaretakerId);
+            if (nurse == null) return NotFound();
+
+            // Check renewal limit again (safety check)
+            if (nurse.CurrentRenewalCount >= nurse.MaxRenewalsAllowed)
+            {
+                TempData["ErrorMessage"] = "Renewal limit reached for this nurse.";
+                return RedirectToAction("MyBookings");
+            }
+
+            model.UserId          = userId;
+            model.OrderDate       = DateTime.Now;
+            model.BookingStatus   = "Requested";
+            model.PaymentStatus   = "Pending";
+            model.OrderStatus     = "Confirmed";
+            model.TermsAcceptedOn = DateTime.Now;
+            model.ProductDetails  = CaretakerId.ToString();
+            model.IsRenewal       = true;
+
+            decimal grossAmount = PricePerDay * model.NumberOfDays;
+
+            if (model.NumberOfDays >= 28)
+                model.DiscountPercent = 25;
+            else if (model.NumberOfDays == 7)
+                model.DiscountPercent = 10;
+            else
+                model.DiscountPercent = 0;
+
+            model.TotalAmount        = grossAmount - (grossAmount * model.DiscountPercent / 100);
+            model.OriginalAmount     = grossAmount;
+            model.Address            = model.ServiceAddress ?? "N/A";
+            model.City               = "N/A";
+            model.ZipCode            = "N/A";
+            model.Country            = "India";
+            model.Method             = model.PaymentMethod ?? "Cash";
+            // Use submitted CardHolderName if provided, else fallback to FullName
+            model.CardHolderName     = string.IsNullOrEmpty(model.CardHolderName) 
+                                       ? (model.FullName ?? "N/A") 
+                                       : model.CardHolderName;
+            model.CardLastFourDigits = "N/A";
+
+            // Increment nurse renewal count
+            nurse.CurrentRenewalCount += 1;
+
+            _context.OrderConfirm.Add(model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Renewal booking request sent! The nurse will confirm within 24 hours.";
+            return RedirectToAction("MyBookings");
+        }
         // ────────────────────────────────────
         //  MY BOOKINGS (customer tracks)
         // ────────────────────────────────────
@@ -175,197 +256,6 @@ namespace CareProjct.web.Controllers
             return View(bookings);
         }
 
-        // ────────────────────────────────────
-        //  CHECKOUT (old cart flow)
-        // ────────────────────────────────────
-        public IActionResult Checkout()
-        {
-            var cart =
-                HttpContext.Session.GetObject<List<CartItem>>("Cart")
-                ?? new List<CartItem>();
-
-            if (cart.Count == 0)
-                return RedirectToAction("Cart");
-
-            string userId = HttpContext.Session.GetString("userId");
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Home");
-
-            var order = new Orders1
-            {
-                UserId      = userId,
-                TotalAmount = cart.Sum(item => item.Price * item.Quantity),
-                OrderItems  = cart.Select(item => new OrderItems
-                {
-                    ProductId   = item.ID,
-                    ProductName = item.FullName,
-                    Price       = item.Price,
-                    Quantity    = item.Quantity,
-                }).ToList()
-            };
-
-            _context.Orders1.Add(order);
-            _context.SaveChanges();
-
-            HttpContext.Session.Remove("Cart");
-
-            return RedirectToAction("OrderConfirmation",
-                new { orderId = order.Id });
-        }
-
-        // ────────────────────────────────────
-        //  ORDER CONFIRMATION
-        // ────────────────────────────────────
-        public IActionResult OrderConfirmation(int orderId)
-        {
-            var order = _context.Orders1
-                .Include(o => o.OrderItems)
-                .FirstOrDefault(o => o.Id == orderId);
-
-            if (order == null) return NotFound();
-
-            string userId = HttpContext.Session.GetString("userId");
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Home");
-
-            if (!int.TryParse(userId, out int userIdInt))
-                return RedirectToAction("Login", "Home");
-
-            var user = _context.Register
-                .FirstOrDefault(u => u.ID == userIdInt);
-
-            if (user == null)
-                return RedirectToAction("Login", "Home");
-
-            var orderConfirm = new OrderConfirm
-            {
-                OrderId        = order.Id,
-                ProductDetails = order.OrderItems != null
-                    ? string.Join(", ",
-                        order.OrderItems.Select(i => i.ProductName))
-                    : "",
-                UserId        = userId,
-                TotalAmount   = order.TotalAmount,
-                OrderDate     = DateTime.Now,
-                OrderStatus   = "Pending",
-                FullName      = user.FirstName + " " + user.LastName,
-                PhoneNumber   = "",
-                Method        = "Standard",
-                Cost          = 5.00m,
-                PaymentMethod = "Credit Card",
-                PaymentStatus = "Pending"
-            };
-
-            return View(orderConfirm);
-        }
-
-        // ────────────────────────────────────
-        //  PROCESS PAYMENT
-        // ────────────────────────────────────
-        [HttpPost]
-        public IActionResult ProcessPayment(
-            OrderConfirm model,
-            string userIdBackup)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(model.UserId))
-                    model.UserId = userIdBackup
-                        ?? HttpContext.Session.GetString("userId");
-
-                var order = _context.Orders1
-                    .Include(o => o.OrderItems)
-                    .FirstOrDefault(o => o.Id == model.OrderId);
-
-                if (order == null) return NotFound();
-
-                if (string.IsNullOrEmpty(model.UserId))
-                    model.UserId = order.UserId;
-
-                model.PaymentStatus = "Completed";
-                model.PaymentDate   = DateTime.Now;
-                model.PaymentMethod = "Credit Card";
-                model.OrderStatus   = "Confirmed";
-
-                if (order.OrderItems != null && order.OrderItems.Any())
-                {
-                    model.ProductDetails = string.Join(", ",
-                        order.OrderItems.Select(i => i.ProductName));
-
-                    var productIds = order.OrderItems
-                        .Select(item => item.ProductId).ToList();
-
-                    var products = _context.Caretaker
-                        .Where(p => productIds.Contains(p.ID)).ToList();
-
-                    foreach (var product in products)
-                        product.Available = false;
-                }
-
-                _context.OrderConfirm.Add(model);
-                _context.SaveChanges();
-
-                return RedirectToAction("OrderComplete",
-                    new { confirmationId = model.Id });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("",
-                    "Error processing payment: " + ex.Message);
-                return View("OrderConfirmation", model);
-            }
-        }
-
-        // ────────────────────────────────────
-        //  ORDER COMPLETE
-        // ────────────────────────────────────
-        public IActionResult OrderComplete(int confirmationId)
-        {
-            var confirmation = _context.OrderConfirm
-                .FirstOrDefault(c => c.Id == confirmationId);
-
-            if (confirmation == null) return NotFound();
-
-            return View(confirmation);
-        }
-
-        // ────────────────────────────────────
-        //  DOWNLOAD RECEIPT
-        // ────────────────────────────────────
-        public IActionResult DownloadReceipt(int confirmationId)
-        {
-            var confirmation = _context.OrderConfirm
-                .FirstOrDefault(o => o.Id == confirmationId);
-
-            if (confirmation == null) return NotFound();
-
-            byte[] pdfBytes =
-                _receiptService.GenerateOrderReceiptPdf(confirmation);
-
-            return File(pdfBytes, "application/pdf",
-                $"ElderCare_Receipt_{confirmation.Id}.pdf");
-        }
-
-        // ────────────────────────────────────
-        //  PAYMENT PAGE
-        // ────────────────────────────────────
-        public IActionResult Payment()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Payment(PaymentInfo model)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.PaymentInfo.Add(model);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Payment");
-        }
-
-        // ── Customer Profile ──────────────────────────────────────────
        // ── Customer Profile ──
         public IActionResult CustomerProfile()
         {

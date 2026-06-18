@@ -232,8 +232,38 @@
                             <div style="font-size:0.8rem;color:#999;">Total Paid</div>
                             <div class="amount">₹@b.TotalAmount</div>
                         </div>
-                        <span class="payment-status pay-@b.PaymentStatus">@b.PaymentStatus</span>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span class="payment-status pay-@b.PaymentStatus">@b.PaymentStatus</span>
+                            @if (b.PaymentStatus == "Pending")
+                            {
+                                <form asp-action="MarkAsPaid" asp-controller="Account" method="post" style="margin:0;">
+                                    <input type="hidden" name="bookingId" value="@b.Id" />
+                                    <button type="submit"
+                                        style="background:#28a745;color:white;border:none;border-radius:8px;padding:6px 16px;font-weight:700;cursor:pointer;">
+                                        💳 Pay Now
+                                    </button>
+                                </form>
+                            }
+                        </div>
                     </div>
+                    @if (!b.IsRenewal || b.RenewalCount < 2)
+                    {
+                        <div style="margin-top:10px;">
+                            <a href="/Account/RenewBooking?bookingId=@b.Id"
+                               style="background:#36625a;color:white;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.85rem;">
+                                🔁 Renew Booking
+                            </a>
+                            <span style="font-size:0.78rem;color:#aaa;margin-left:10px;">
+                                Extend service with the same nurse
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="margin-top:10px;font-size:0.82rem;color:#aaa;">
+                            🔒 Maximum renewals reached for this booking.
+                        </div>
+                    }
                 </div>
             }
         }
