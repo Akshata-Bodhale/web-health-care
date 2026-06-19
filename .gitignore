@@ -1,0 +1,52 @@
+# ── Build output ──
+bin/
+obj/
+
+# ── .NET Core ──
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+*.ncrunch*
+
+# ── Database — DO NOT commit the live DB ──
+*.db
+*.db-shm
+*.db-wal
+
+# ── User secrets ──
+appsettings.Development.json
+secrets.json
+
+# ── Published output ──
+publish/
+out/
+
+# ── Uploaded files (wwwroot/images, wwwroot/documents) ──
+wwwroot/images/
+wwwroot/documents/
+
+# ── But keep static site images ──
+!wwwroot/images/care.jpg
+!wwwroot/images/elder.jpg
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──
+*.log
+logs/
+
+# ── NuGet ──
+*.nupkg
+.nuget/
+
+# ── Rider / JetBrains ──
+.idea/
+
+# ── Dump files ──
+project_dump.txt
