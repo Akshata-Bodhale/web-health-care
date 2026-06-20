@@ -9,6 +9,7 @@ namespace CareProjct.web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Applicationdbcontext _Context;
+        private readonly IConfiguration _config;
 
         public HomeController(ILogger<HomeController> logger,
         Applicationdbcontext ct,

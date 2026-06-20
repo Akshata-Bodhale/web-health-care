@@ -54,12 +54,25 @@
     }
 
     .hero-title {
-        font-size: 2.8rem;
-        font-weight: 800;
-        color: white;
-        line-height: 1.15;
-        margin-bottom: 20px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 20px;
+}
+
+@@media (max-width: 768px) {
+    .hero-title { font-size: 1.9rem; }
+    .hero-section { padding: 50px 0 40px; }
+    .hero-desc { font-size: 0.95rem; }
+    .hero-image-box { margin-top: 30px; }
+    .btn-hero-primary, .btn-hero-outline { 
+        padding: 12px 20px; 
+        font-size: 0.88rem; 
     }
+    .stat-number { font-size: 1.3rem; }
+    .section-title { font-size: 1.6rem; }
+}
 
     .hero-title span {
         color: var(--ec-accent);
@@ -380,7 +393,7 @@
             <div class="col-lg-6" style="position:relative;z-index:1;">
                 <div class="hero-tag">CareConnect</div>
                 <h1 class="hero-title">
-                    Compassionate Care<br>for with  <span>CareConnect</span>
+                    Compassionate Care<br>for Your<span>Loved Ones</span>
                 </h1>
                 <p class="hero-desc">
                     We connect families with verified, professional caretakers — bringing dignity,
