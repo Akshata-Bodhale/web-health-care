@@ -2,16 +2,16 @@
 using CareProjct.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Logging;
 namespace CareProjct.web.Controllers
 {
     public class AdminBoardController : Controller
     {
-        private readonly ILogger<CaretakerController> _logger;
+        private readonly ILogger<AdminBoardController> _logger;
         private readonly Applicationdbcontext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public AdminBoardController(ILogger<CaretakerController> logger,
+            public AdminBoardController(ILogger<AdminBoardController> logger,
             Applicationdbcontext ct, IWebHostEnvironment hostEnvironment)
         {
             _logger = logger;

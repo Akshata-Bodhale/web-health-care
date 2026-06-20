@@ -48,5 +48,6 @@ logs/
 # ── Rider / JetBrains ──
 .idea/
 
-# ── Dump files ──
-project_dump.txt
+# ── App settings with secrets ──
+appsettings.json
+appsettings.*.json

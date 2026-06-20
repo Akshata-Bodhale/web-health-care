@@ -156,7 +156,7 @@ namespace CareProjct.web.Controllers
             return View();
         }
 
-        public IActionResult CaretakerData(string city = null)
+        public IActionResult CaretakerData(string? city = null)
         {
             var query = _Context.Caretaker
                 .Where(p => p.Available == true

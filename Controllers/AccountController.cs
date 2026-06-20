@@ -118,11 +118,12 @@ public IActionResult MarkAsPaid(int bookingId)
     booking.PaymentStatus = "Paid";
     booking.PaymentDate   = DateTime.Now;
 
-    // Add earnings to nurse
-    int caretakerId = int.Parse(booking.ProductDetails);
-    var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == caretakerId);
-    if (nurse != null)
-        nurse.TotalEarned += booking.TotalAmount;
+    if (int.TryParse(booking.ProductDetails, out int caretakerId))
+    {
+        var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == caretakerId);
+        if (nurse != null)
+            nurse.TotalEarned += booking.TotalAmount;
+    }
 
     _context.SaveChanges();
 
@@ -140,7 +141,9 @@ public IActionResult MarkAsPaid(int bookingId)
             var original = _context.OrderConfirm.FirstOrDefault(b => b.Id == bookingId);
             if (original == null) return NotFound();
 
-            int caretakerId = int.Parse(original.ProductDetails);
+           
+            if (!int.TryParse(original.ProductDetails, out int caretakerId))
+                return BadRequest("Invalid booking data.");
             var nurse = _context.Caretaker.FirstOrDefault(c => c.ID == caretakerId);
             if (nurse == null) return NotFound();
 
@@ -279,14 +282,18 @@ public IActionResult MarkAsPaid(int bookingId)
             {
                 FullName = user.FirstName + " " + user.LastName,
                 Email    = user.Email,
-                BookingHistory = bookings.Select(b => new BookingHistoryItem
-                {
-                    BookingId   = b.Id,
-                    NurseName   = b.ProductDetails ?? "N/A",
-                    ServiceType = "Elder Care",
-                    BookingDate = b.OrderDate,
-                    Status      = b.BookingStatus ?? b.OrderStatus ?? "Pending",
-                    TotalAmount = b.TotalAmount
+                BookingHistory = bookings.Select(b => {
+                    int.TryParse(b.ProductDetails, out int nid);
+                    var n = _context.Caretaker.FirstOrDefault(c => c.ID == nid);
+                    return new BookingHistoryItem
+                    {
+                        BookingId   = b.Id,
+                        NurseName   = n != null ? n.FullName : (b.ProductDetails ?? "N/A"),
+                        ServiceType = "Elder Care",
+                        BookingDate = b.OrderDate,
+                        Status      = b.BookingStatus ?? b.OrderStatus ?? "Pending",
+                        TotalAmount = b.TotalAmount
+                    };
                 }).ToList()
             };
 

@@ -10,15 +10,13 @@ namespace CareProjct.web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly Applicationdbcontext _Context;
 
-        // ── ADMIN CREDENTIALS (hardcoded) ──
-        private const string AdminEmail    = "admin@eldercare.com";
-        private const string AdminPassword = "Admin@1234";
-
         public HomeController(ILogger<HomeController> logger,
-            Applicationdbcontext ct)
+        Applicationdbcontext ct,
+        IConfiguration config)
         {
             _logger  = logger;
             _Context = ct;
+            _config  = config;
         }
 
         public IActionResult Index()
@@ -116,7 +114,9 @@ namespace CareProjct.web.Controllers
         [HttpPost]
         public IActionResult Login(string email, string Password)
         {
-            // ── 1. Admin Check (hardcoded) ──
+            var AdminEmail    = _config["AdminCredentials:email"];
+            var AdminPassword = _config["AdminCredentials:Password"];
+
             if (email == AdminEmail && Password == AdminPassword)
             {
                 HttpContext.Session.SetString("userId",    "0");
