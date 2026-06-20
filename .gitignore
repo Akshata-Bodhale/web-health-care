@@ -51,3 +51,4 @@ logs/
 # ── App settings with secrets ──
 appsettings.json
 appsettings.*.json
+appsettings.Development.json
